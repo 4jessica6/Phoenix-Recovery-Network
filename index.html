@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+  <!-- ===================== SEO / META ===================== -->
+  <title>Phoenix Recovery Network | Sober Living Homes in Indiana — Coming Soon</title>
+  <meta name="description" content="Phoenix Recovery Network operates structured, peer-supported sober living homes across Indiana. Our new website launches October 19.">
+  <link rel="canonical" href="https://www.phoenixrecoverynetwork.com/">
+  <meta name="theme-color" content="#000037">
+
+  <!-- Open Graph (Facebook, LinkedIn, iMessage, etc.) — social sites need absolute image URLs -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Phoenix Recovery Network">
+  <meta property="og:url" content="https://www.phoenixrecoverynetwork.com/">
+  <meta property="og:title" content="Phoenix Recovery Network | Sober Living Homes in Indiana — Coming Soon">
+  <meta property="og:description" content="Phoenix Recovery Network operates structured, peer-supported sober living homes across Indiana. Our new website launches October 19.">
+  <meta property="og:image" content="https://www.phoenixrecoverynetwork.com/Phoenix_Hero_Video_Poster.jpg">
+  <meta property="og:image:width" content="1920">
+  <meta property="og:image:height" content="1080">
+  <meta property="og:image:alt" content="A phoenix with glowing ember wings flying over a city skyline at sunset">
+
+  <!-- Twitter / X card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Phoenix Recovery Network | Sober Living Homes in Indiana — Coming Soon">
+  <meta name="twitter:description" content="Structured, peer-supported sober living homes across Indiana. Our new website launches October 19.">
+  <meta name="twitter:image" content="https://www.phoenixrecoverynetwork.com/Phoenix_Hero_Video_Poster.jpg">
+
+  <!-- Favicons (cropped from the PRN color logo) -->
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="180x180" href="favicon.png">
+  <link rel="apple-touch-icon" href="favicon.png">
+
+  <!-- Preload the poster so something appears instantly while the video buffers -->
+  <link rel="preload" as="image" href="Phoenix_Hero_Video_Poster.jpg">
+
+  <!-- ===================== FONTS ===================== -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* =========================================================
+       BRAND TOKENS — change colors here.
+       Sampled from PRN_Color.png:
+         navy   #000037  (logo wordmark + outlines)
+         copper #B44C00  (inner wing stroke)
+         ember  #951B00  (outer wing stroke)
+       --copper-light is a lighter tint of the copper, used for
+       small text on dark backgrounds so it passes WCAG AA.
+       ========================================================= */
+    :root {
+      --navy:         #000037;
+      --navy-soft:    #0B1033;
+      --copper:       #B44C00;
+      --copper-light: #E8A06A;
+      --ember:        #951B00;
+      --cream:        #F6F1EA;
+      --cream-muted:  rgba(246, 241, 234, 0.82);
+
+      --font-serif: "Cormorant Garamond", "Iowan Old Style", Georgia, serif;
+      --font-sans:  "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+      --gutter: clamp(16px, 4vw, 48px);   /* 16px side margin on phones */
+    }
+
+    /* ---------- Reset / base ---------- */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      min-height: 100vh;
+      min-height: 100svh;
+      background: var(--navy);
+      color: var(--cream);
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;               /* never scroll sideways */
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; }
+    img { max-width: 100%; height: auto; display: block; }
+
+    .visually-hidden {
+      position: absolute !important;
+      width: 1px; height: 1px;
+      padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0 0 0 0);
+      white-space: nowrap; border: 0;
+    }
+
+    /* ---------- Background: poster + video + overlay ---------- */
+    .bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      /* Poster doubles as the fallback (reduced motion, autoplay blocked, no JS) */
+      background: var(--navy) url("Phoenix_Hero_Video_Poster.jpg") center / cover no-repeat;
+    }
+    .bg video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    /* Dark navy gradient keeps text readable over every frame of the video */
+    .bg::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 60% at 50% 45%, rgba(0, 0, 55, 0.55) 0%, rgba(0, 0, 55, 0.25) 100%),
+        linear-gradient(180deg, rgba(0, 0, 55, 0.70) 0%, rgba(0, 0, 55, 0.50) 40%, rgba(0, 0, 40, 0.88) 100%);
+    }
+
+    /* ---------- Page layout ---------- */
+    .page {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      padding: 0 var(--gutter);
+    }
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: clamp(32px, 7vh, 72px) 0 32px;
+      max-width: 760px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* 1. Logo */
+    .logo {
+      width: clamp(120px, 18vw, 170px);
+      margin-bottom: clamp(20px, 4vh, 36px);
+      filter: drop-shadow(0 2px 14px rgba(0, 0, 30, 0.45));
+    }
+
+    /* 2. Eyebrow label */
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      margin: 0 0 16px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--copper-light);
+    }
+    .eyebrow::before,
+    .eyebrow::after {
+      content: "";
+      width: 28px;
+      height: 1px;
+      background: currentColor;
+      opacity: 0.7;
+    }
+
+    /* 3. Headline */
+    h1 {
+      margin: 0 0 16px;
+      font-family: var(--font-serif);
+      font-weight: 500;
+      font-size: clamp(40px, 7.2vw, 76px);
+      line-height: 1.04;
+      letter-spacing: -0.01em;
+      text-wrap: balance;
+      text-shadow: 0 2px 24px rgba(0, 0, 30, 0.5);
+    }
+    h1 em { font-style: italic; color: #F3C9A3; }
+
+    /* 4. Subline */
+    .subline {
+      margin: 0 auto 36px;
+      max-width: 34em;
+      font-size: clamp(15px, 1.6vw, 18px);
+      color: var(--cream-muted);
+      text-wrap: balance;
+    }
+
+    /* 5. Countdown */
+    .countdown {
+      display: flex;
+      justify-content: center;
+      gap: clamp(8px, 2vw, 16px);
+      width: 100%;
+      margin: 0 0 36px;
+      padding: 0;
+      list-style: none;
+    }
+    .countdown li {
+      flex: 0 1 112px;               /* shrinks to fit; stays on one row */
+      min-width: 0;
+      padding: clamp(12px, 2.4vw, 20px) 4px clamp(10px, 2vw, 16px);
+      border: 1px solid rgba(232, 160, 106, 0.35);
+      border-radius: 4px;
+      background: rgba(0, 0, 55, 0.45);
+      -webkit-backdrop-filter: blur(6px);
+      backdrop-filter: blur(6px);
+    }
+    .countdown .num {
+      display: block;
+      font-family: var(--font-serif);
+      font-weight: 600;
+      font-size: clamp(32px, 6vw, 54px);
+      line-height: 1;
+      font-variant-numeric: tabular-nums lining-nums;
+    }
+    .countdown .unit {
+      display: block;
+      margin-top: 8px;
+      font-size: clamp(9px, 1.1vw, 11px);
+      font-weight: 500;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--copper-light);
+    }
+
+    /* Post-launch state (shown when the countdown hits zero) */
+    .live { margin: 0 0 36px; }
+    .countdown[hidden],
+    .live[hidden] { display: none; }
+    .live p {
+      margin: 0 0 20px;
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: clamp(26px, 4vw, 36px);
+    }
+    .button {
+      display: inline-block;
+      padding: 14px 30px;
+      border-radius: 2px;
+      background: var(--copper);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: background-color 0.2s ease;
+    }
+    .button:hover { background: var(--ember); }
+
+    /* 6. Contact */
+    .contact {
+      margin: 0;
+      font-size: 15px;
+      color: var(--cream-muted);
+    }
+    .contact a {
+      color: var(--cream);
+      text-decoration: underline;
+      text-decoration-color: var(--copper-light);
+      text-underline-offset: 4px;
+      overflow-wrap: anywhere;      /* long email can wrap on tiny phones */
+    }
+    .contact a:hover { color: var(--copper-light); }
+
+    /* Visible keyboard focus everywhere */
+    a:focus-visible {
+      outline: 2px solid var(--copper-light);
+      outline-offset: 4px;
+      border-radius: 2px;
+    }
+
+    /* ---------- Footer ---------- */
+    footer {
+      padding: 20px 0 calc(24px + env(safe-area-inset-bottom));
+      text-align: center;
+      font-size: 12px;
+      line-height: 1.7;
+      color: var(--cream-muted);
+    }
+    footer p { margin: 0; }
+    footer .crisis { margin-top: 4px; }
+    footer a { color: var(--cream); font-weight: 600; text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* ---------- Load animation: gentle fade-up, staggered ---------- */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: none; }
+    }
+    .reveal {
+      opacity: 0;
+      animation: fadeUp 1s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+      animation-delay: calc(var(--i, 0) * 120ms + 150ms);
+    }
+
+    /* ---------- Phones ---------- */
+    @media (max-width: 480px) {
+      .eyebrow { letter-spacing: 0.26em; }
+      .eyebrow::before, .eyebrow::after { width: 18px; }
+      .countdown .unit { letter-spacing: 0.12em; }
+    }
+
+    /* ---------- Reduced motion: no animation, poster instead of video ---------- */
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { opacity: 1; animation: none; }
+      .bg video { display: none; }
+      .button { transition: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background video. The source is chosen by the script below
+       (mobile file under 768px, desktop file otherwise). -->
+  <div class="bg" aria-hidden="true">
+    <video id="hero-video" autoplay muted loop playsinline preload="metadata"
+           poster="Phoenix_Hero_Video_Poster.jpg"
+           data-src-desktop="Phoenix_Hero_Video_Web.mp4"
+           data-src-mobile="Phoenix_Hero_Video_Mobile_720p.mp4"></video>
+  </div>
+
+  <div class="page">
+    <main>
+      <!-- 1. Logo -->
+      <img class="logo reveal" style="--i:0"
+           src="PRN_White_web.png" width="560" height="595"
+           alt="Phoenix Recovery Network">
+
+      <!-- 2. Label -->
+      <p class="eyebrow reveal" style="--i:1">Coming Soon</p>
+
+      <!-- 3. Headline -->
+      <h1 class="reveal" style="--i:2">A steady place to <em>rise</em> again.</h1>
+
+      <!-- 4. Subline -->
+      <p class="subline reveal" style="--i:3">
+        Sober living homes across Indiana. Our new website launches October 19.
+      </p>
+
+      <!-- 5. Countdown -->
+      <div class="reveal" style="--i:4; width:100%">
+        <ul class="countdown" id="countdown" aria-hidden="true">
+          <li><span class="num" data-unit="days">--</span><span class="unit">Days</span></li>
+          <li><span class="num" data-unit="hours">--</span><span class="unit">Hours</span></li>
+          <li><span class="num" data-unit="minutes">--</span><span class="unit">Minutes</span></li>
+          <li><span class="num" data-unit="seconds">--</span><span class="unit">Seconds</span></li>
+        </ul>
+
+        <!-- Screen-reader summary: updated once a minute, not every second -->
+        <p class="visually-hidden" id="countdown-sr" aria-live="polite"></p>
+
+        <!-- Shown automatically at launch time -->
+        <div class="live" id="live" hidden>
+          <p>We’re live. Welcome home.</p>
+          <!-- POST-LAUNCH BUTTON LINK: change href if the homepage lives elsewhere -->
+          <a class="button" href="/">Enter the new site</a>
+        </div>
+      </div>
+
+      <!-- 6. Contact -->
+      <p class="contact reveal" style="--i:5">
+        Questions or looking for a bed now? Email
+        <a href="mailto:info@phoenixrecoverynetwork.com">info@phoenixrecoverynetwork.com</a>
+        <!-- ==== PHONE NUMBER PLACEHOLDER ====
+             When ready, delete this comment wrapper and fill in the number, e.g.:
+             <br>or call <a href="tel:+13175550123">(317) 555-0123</a>
+        ==== END PHONE NUMBER PLACEHOLDER ==== -->
+      </p>
+    </main>
+
+    <footer class="reveal" style="--i:6">
+      <p>© 2026 Phoenix Recovery Network · Indiana</p>
+      <p class="crisis">
+        If you or someone you know is in crisis, call or text <a href="tel:988">988</a>.
+        In an emergency, call <a href="tel:911">911</a>.
+      </p>
+    </footer>
+  </div>
+
+  <script>
+    /* =========================================================
+       LAUNCH DATE — change the launch date/time here.
+       Oct 19, 2026, 12:01 AM Indianapolis time (EDT = UTC−4).
+       Stored as a fixed UTC moment, so the countdown is correct
+       in every visitor's time zone.
+       ========================================================= */
+    var LAUNCH_DATE = new Date("2026-10-19T00:01:00-04:00");
+
+    /* QA helper: add ?test=10 to the URL to count down from 10 seconds
+       (does not change LAUNCH_DATE; ignored on normal visits). */
+    (function () {
+      var t = new URLSearchParams(location.search).get("test");
+      if (t && !isNaN(t)) LAUNCH_DATE = new Date(Date.now() + Number(t) * 1000);
+    })();
+
+    /* ---------- Background video ---------- */
+    (function () {
+      var video = document.getElementById("hero-video");
+      var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      // Reduced motion: don't download the video at all; the poster shows instead.
+      if (reduceMotion) { video.remove(); return; }
+
+      // Phones (<768px) get the lighter 720p file.
+      var isMobile = window.matchMedia("(max-width: 767px)").matches;
+      video.src = isMobile ? video.dataset.srcMobile : video.dataset.srcDesktop;
+
+      // Some browsers need these set as properties (not just attributes) to autoplay.
+      video.muted = true;
+      video.playsInline = true;
+      var p = video.play();
+      if (p && p.catch) p.catch(function () { /* autoplay blocked: poster stays visible */ });
+    })();
+
+    /* ---------- Countdown ---------- */
+    (function () {
+      var els = {};
+      document.querySelectorAll("#countdown .num").forEach(function (el) {
+        els[el.dataset.unit] = el;
+      });
+      var list = document.getElementById("countdown");
+      var sr = document.getElementById("countdown-sr");
+      var live = document.getElementById("live");
+      var lastMinute = null;
+      var timer;
+
+      function pad(n) { return n < 10 ? "0" + n : String(n); }
+      function plural(n, word) { return n + " " + word + (n === 1 ? "" : "s"); }
+
+      function tick() {
+        var diff = LAUNCH_DATE.getTime() - Date.now();
+
+        if (diff <= 0) {
+          clearInterval(timer);
+          list.hidden = true;
+          live.hidden = false;
+          sr.textContent = "We’re live. Welcome home.";
+          return;
+        }
+
+        var total = Math.floor(diff / 1000);
+        var d = Math.floor(total / 86400);
+        var h = Math.floor((total % 86400) / 3600);
+        var m = Math.floor((total % 3600) / 60);
+        var s = total % 60;
+
+        els.days.textContent = pad(d);
+        els.hours.textContent = pad(h);
+        els.minutes.textContent = pad(m);
+        els.seconds.textContent = pad(s);
+
+        // Announce to screen readers only when the minute changes.
+        var minuteKey = Math.floor(total / 60);
+        if (minuteKey !== lastMinute) {
+          lastMinute = minuteKey;
+          sr.textContent = minuteKey === 0
+            ? "Launching in less than a minute."
+            : "Launching in " + plural(d, "day") + ", " +
+              plural(h, "hour") + ", and " + plural(m, "minute") + ".";
+        }
+      }
+
+      tick();
+      timer = setInterval(tick, 1000);
+    })();
+  </script>
+</body>
+</html>
