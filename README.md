@@ -16,7 +16,7 @@ All assets are referenced by relative path, so they must stay next to `index.htm
 ## Editing
 
 - **Launch time**: `LAUNCH_DATE` at the top of the script in `index.html`
-  (currently `2026-10-19T00:01:00-04:00`, 12:01 AM Indianapolis time).
+  (currently `2026-10-23T00:01:00-04:00`, 12:01 AM Indianapolis time).
 - **Preview the "We're live" view**: add `?test=10` to the URL to count down from 10 seconds.
 - **Colors**: CSS variables in `:root`.
 - **Phone number**: commented block marked `PHONE NUMBER PLACEHOLDER`.
