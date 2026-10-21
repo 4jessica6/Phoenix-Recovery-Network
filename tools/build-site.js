@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // Builds the static site into preview/ from tools/site-data.js. No dependencies.
 //   node tools/build-site.js            → preview build (noindex, preview bar, [placeholders] tinted)
-//   node tools/build-site.js --launch   → launch build (no preview bar, hero video paths at site root)
+//   node tools/build-site.js --launch   → launch build (no bar, indexable, final OG image)
+// Layout and copy follow the Claude Design handoff v8 (2026-10-21).
 'use strict';
 const fs = require('fs');
 const path = require('path');
@@ -10,26 +11,38 @@ const D = require('./site-data.js');
 const LAUNCH = process.argv.includes('--launch');
 const REPO = path.join(__dirname, '..');
 const OUT = path.join(REPO, 'preview');
-const HERO = LAUNCH ? '' : '../';   // the teaser's hero video files live at the repo root
+const SITE = 'https://www.phoenixrecoverynetwork.com';
+const INDIANA_PATH = fs.readFileSync(path.join(__dirname, 'indiana-path.txt'), 'utf8').trim();
 
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 // Escape, then tint [placeholders] in the preview build so the client can spot what is still TBC.
 const t = s => esc(s).replace(/\[([^\]]+)\]/g, LAUNCH ? '[$1]' : '<span class="tbc">[$1]</span>');
-const raw = s => String(s); // trusted HTML from site-data (e.g. <em>)
+const plain = s => String(s).replace(/[\[\]]/g, '');
+const WORDS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve'];
+const word = n => WORDS[n] || String(n);
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
 
-function status(h) {
-  if (h.beds === 0) return { cls: '', text: 'Waitlist open' };
-  if (typeof h.beds === 'number') return { cls: 'open', text: 'Beds available' };
-  return { cls: '', text: 'Ask about openings' };
-}
-function bedsText(h) {
-  if (h.beds === 0) return 'Waitlist open';
-  if (h.beds === 1) return '1 bed available now';
-  if (typeof h.beds === 'number') return h.beds + ' beds available now';
-  return 'Call for current availability';
-}
+/* ---------- derived data ---------- */
+const people = h => (plain(h.serves).toLowerCase() === 'women' ? 'women' : 'men');
+const servesLabel = h => plain(h.serves).toLowerCase() === 'women' ? 'Women' : 'Men';
+const cities = [...new Set(D.homes.map(h => h.city))];
+const byCity = c => D.homes.filter(h => h.city === c);
+const cityCounts = c => {
+  const hs = byCity(c), m = hs.filter(h => people(h) === 'men').length, w = hs.length - m;
+  const parts = [];
+  if (m) parts.push(`${m} men’s home${m === 1 ? '' : 's'}`);
+  if (w) parts.push(`${w} women’s home${w === 1 ? '' : 's'}`);
+  return parts.join(' · ');
+};
+const nearLine = h => {
+  const find = k => (h.nearby.find(n => n[0].toLowerCase().includes(k)) || [])[1];
+  return [['Meetings', find('aa')], ['Bus', find('bus')], ['Grocery', find('grocery')]].filter(x => x[1]).map(x => `${x[0]} ${x[1]}`).join(' · ');
+};
+const residents = h => `${h.capacity} residents`;
 const homeUrl = (base, h) => `${base}homes/${h.slug}/`;
 const homeImg = (base, h, i) => h.photos[i] ? `${base}assets/homes/${h.slug}/${h.photos[i][0]}` : null;
+const homeVideo = (base, h) => h.video ? `${base}assets/homes/${h.slug}/${h.video}` : null;
+const total = D.homes.length;
 
 /* ---------- shared chrome ---------- */
 function previewBar(base, current) {
@@ -40,35 +53,33 @@ function previewBar(base, current) {
 }
 
 function header(base, kind, home) {
-  const home_ = base || './';
+  const root = base || './';
   if (kind === 'house') {
     return `<header class="site-header"><div class="inner">
-  <a class="brand" href="#top"><img src="${base}assets/img/phoenix-mark.png" alt="${esc(home.name)}"><span class="lockup"><span class="l1">PHOENIX HOUSE</span><span class="l2">A PHOENIX RECOVERY NETWORK HOME</span></span></a>
-  <nav class="site-nav" aria-label="This house"><a href="#house">The house</a><a href="#life">Daily life</a><a href="#area">Neighborhood</a><a href="#questions">Questions</a><a class="pill-outline" href="#availability">Check availability</a></nav>
+  <a class="brand" href="#top"><img src="${base}assets/img/phoenix-mark.png" alt="${esc(home.name)}"><span class="lockup"><span class="l1">${esc(home.name.toUpperCase())}</span><span class="l2">A PHOENIX RECOVERY NETWORK HOME</span></span></a>
+  <nav class="site-nav" aria-label="This house"><a href="#house">The house</a><a href="#life">Daily life</a><a href="#area">Neighborhood</a><a href="#questions">Questions</a><a class="pill-cta" data-apply-cta href="#availability">Apply now</a></nav>
 </div></header>`;
   }
-  const onHome = kind === 'network';
-  const l = h => (onHome ? h : home_ + h);
+  const l = h => (kind === 'network' ? h : root + h);
   return `<header class="site-header"><div class="inner">
-  <a class="brand" href="${home_}"><img src="${base}assets/img/phoenix-mark.png" alt="Phoenix Recovery Network"><span class="lockup"><span class="l1">PHOENIX</span><span class="l2">RECOVERY NETWORK</span></span></a>
-  <nav class="site-nav" aria-label="Site"><a href="${base}homes/">Homes</a><a href="${l('#approach')}">Our approach</a><a href="${l('#families')}">Families &amp; referrals</a><a class="pill-outline" href="${l('#availability')}">Check availability</a></nav>
+  <a class="brand" href="${root}"><img src="${base}assets/img/phoenix-mark.png" alt="Phoenix Recovery Network"><span class="lockup"><span class="l1">PHOENIX</span><span class="l2">RECOVERY NETWORK</span></span></a>
+  <nav class="site-nav" aria-label="Site"><a href="${base}homes/">Homes</a><a href="${l('#approach')}">Our approach</a><a href="${l('#families')}">Families &amp; referrals</a><a class="pill-cta" data-apply-cta href="${l('#availability')}">Apply now</a></nav>
 </div></header>`;
 }
 
-function footer(base, kind, home) {
-  const home_ = base || './';
-  const homesLinks = D.homes.map(h => `<a href="${homeUrl(base, h)}">${t(h.name)}, ${t(h.city)}</a>`).join('');
+function footer(base, kind) {
+  const root = base || './';
   const first = kind === 'house'
     ? `<div class="logos"><img src="${base}assets/img/phoenix-house-white.png" alt="Phoenix House"><div class="sep"></div><img src="${base}assets/img/prn-white.png" alt="Phoenix Recovery Network"></div>`
-    : `<div class="brandcol"><img src="${base}assets/img/prn-white.png" alt="Phoenix Recovery Network"><div>Structured sober living homes for men across Indiana.</div></div>`;
+    : `<div class="brandcol"><img src="${base}assets/img/prn-white.png" alt="Phoenix Recovery Network"><div>Structured sober living homes for men and women across Indiana.</div></div>`;
   const second = kind === 'house'
-    ? `<div class="col"><div class="k">This house</div><a href="#house">The house</a><a href="#life">Daily life</a><a href="#questions">Questions</a><a href="#availability">Check availability</a></div>
-<div class="col"><div class="k">The network</div><a href="${home_}">Phoenix Recovery Network</a><a href="${home_}#approach">Our approach</a><a href="${base}homes/">All homes</a></div>`
-    : `<div class="col"><div class="k">Explore</div><a href="${base}homes/">Our homes</a><a href="${home_}#approach">Our approach</a><a href="${home_}#families">Families &amp; referrals</a><a href="${home_}#availability">Check availability</a></div>
-<div class="col"><div class="k">Homes</div>${homesLinks}</div>`;
+    ? `<div class="col"><div class="k">This house</div><a href="#house">The house</a><a href="#life">Daily life</a><a href="#questions">Questions</a><a href="#availability">Apply now</a></div>
+<div class="col"><div class="k">The network</div><a href="${root}">Phoenix Recovery Network</a><a href="${root}#approach">Our approach</a><a href="${base}homes/">All homes</a></div>`
+    : `<div class="col"><div class="k">Explore</div><a href="${base}homes/">Our homes</a><a href="${root}#mission">Mission &amp; vision</a><a href="${root}#approach">Our approach</a><a href="${root}#families">Families &amp; referrals</a><a href="${root}#availability">Apply now</a></div>
+<div class="col"><div class="k">Homes</div>${cities.map(c => `<a href="${base}homes/#${c.toLowerCase()}">${esc(c)} · ${byCity(c).length} homes</a>`).join('')}</div>`;
   return `<footer class="site-footer">
 <div class="cols">${first}${second}
-<div class="col"><div class="k">Contact</div><span>${t(D.PHONE)}</span><a href="mailto:${D.EMAIL}">${D.EMAIL}</a></div></div>
+<div class="col"><div class="k">Contact</div><a href="tel:${D.PHONE_TEL}">${esc(D.PHONE)}</a><a href="mailto:${D.EMAIL}">${D.EMAIL}</a></div></div>
 <div class="legal"><div><span><strong>In crisis?</strong> Call or text <a href="tel:988">988</a>. In an emergency, call <a href="tel:911">911</a>.</span><span>© 2026 Phoenix Recovery Network · Indiana</span></div></div>
 </footer>`;
 }
@@ -87,7 +98,7 @@ function page({ base, kind, home, title, description, ogImage, body, current }) 
 <meta property="og:description" content="${esc(description)}">
 <meta property="og:site_name" content="Phoenix Recovery Network">${ogImage ? `\n<meta property="og:image" content="${esc(ogImage)}">` : ''}
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#0D0D3F">
+<meta name="theme-color" content="#0B0B26">
 <link rel="icon" type="image/png" sizes="32x32" href="${base}assets/img/favicon-32.png">
 <link rel="apple-touch-icon" href="${base}assets/img/favicon.png">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="${base}assets/fonts/newsreader-latin.woff2">
@@ -101,7 +112,7 @@ ${header(base, kind, home)}
 <main id="top">
 ${body}
 </main>
-${footer(base, kind, home)}
+${footer(base, kind)}
 </body>
 </html>
 `;
@@ -109,105 +120,132 @@ ${footer(base, kind, home)}
 
 /* ---------- pieces ---------- */
 function mark(base, size) {
-  return `<div class="mark${size === 'sm' ? ' sm' : ''}" data-embers><div class="halo"></div><div class="float"><img src="${base}assets/img/phoenix-mark.png" alt=""></div></div>`;
+  return `<div class="mark${size === 'lg' ? ' lg' : ''}" data-phx-mark data-embers><div class="halo"></div><div class="float"><div class="flap"><img src="${base}assets/img/phoenix-mark.png" alt=""></div></div></div>`;
 }
 const emptyTile = (label, cls = 'tile') => `<div class="${cls} empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-7 7"/></svg><span>${esc(label)}</span></div>`;
+const applyFrame = (title) => `<div class="apply-card">
+  <iframe src="${esc(D.APPLY_URL)}" title="${esc(title)}" loading="lazy"></iframe>
+  <div class="apply-note"><span>Secure application powered by Sobriety Hub.</span><a href="${esc(D.APPLY_URL)}" target="_blank" rel="noopener">Open in a new tab ↗</a></div>
+</div>`;
 
 function gallery(base, h) {
   const tiles = [];
-  const p = h.photos;
-  if (p[0]) {
-    const front = homeImg(base, h, 0);
-    tiles.push(h.video
-      ? `<div class="tile big"><video muted loop playsinline preload="none" poster="${front}" data-src="${base}assets/homes/${h.slug}/${h.video}" aria-label="Walkthrough of ${esc(h.name)}"></video><span class="tag">Walkthrough</span></div>`
-      : `<div class="tile big"><img src="${front}" alt="${esc(p[0][1])}, ${esc(h.name)}"></div>`);
-  } else tiles.push(emptyTile('Front of the house · photo coming soon', 'tile big'));
+  const front = homeImg(base, h, 0), video = homeVideo(base, h);
+  if (video) tiles.push(`<div class="tile big"><video muted loop playsinline preload="none" poster="${front || ''}" data-src="${video}" aria-label="Walkthrough of ${esc(h.name)}"></video><span class="tag">Walkthrough</span></div>`);
+  else if (front) tiles.push(`<div class="tile big"><img src="${front}" alt="${esc(h.photos[0][1])}, ${esc(h.name)}"></div>`);
+  else tiles.push(emptyTile('Front of the house · photo coming soon', 'tile big'));
   const labels = ['Living room', 'Kitchen', 'Bedroom', 'Porch or backyard'];
   for (let i = 1; i <= 4; i++) {
-    tiles.push(p[i] ? `<div class="tile"><img src="${homeImg(base, h, i)}" alt="${esc(p[i][1])}, ${esc(h.name)}" loading="lazy"></div>` : emptyTile(labels[i - 1] + ' · photo coming soon'));
+    tiles.push(h.photos[i] ? `<div class="tile"><img src="${homeImg(base, h, i)}" alt="${esc(h.photos[i][1])}, ${esc(h.name)}" loading="lazy"></div>` : emptyTile(labels[i - 1] + ' · photo coming soon'));
   }
   return `<section class="gallery" aria-label="Photos"><div class="grid">${tiles.join('')}</div></section>`;
 }
 
 function homeCard(base, h) {
-  const s = status(h);
+  const media = h.photos[0] ? `<img src="${homeImg(base, h, 0)}" alt="${esc(h.photos[0][1])}, ${esc(h.name)}" loading="lazy">` : `<span class="ph">Exterior photo</span>`;
+  return `<a class="home-card" href="${homeUrl(base, h)}">
+  <div class="media">${media}<span class="learn">LEARN MORE<span>→</span></span></div>
+  <div class="eyebrow-sm">${t(servesLabel(h).toUpperCase() + ' · ' + h.city.toUpperCase())}</div>
+  <div class="name">${t(h.name)}</div>
+  <div class="meta">${t(residents(h))}</div>
+  <div class="near">${t(nearLine(h))}</div>
+</a>`;
+}
+
+function homesByCity(base, opts = {}) {
+  return cities.map(c => `<div class="city-group" id="${c.toLowerCase()}" data-reveal>
+  <div class="city-head"><h3>${esc(c)}</h3><span>${byCity(c).length} HOMES</span></div>
+  <div class="home-cards">${byCity(c).map(h => homeCard(base, h)).join('')}</div>
+</div>`).join('');
+}
+
+function otherCard(base, h) {
   const thumb = h.photos[0] ? `<img src="${homeImg(base, h, 0)}" alt="${esc(h.name)}" loading="lazy">` : '';
-  return `<a class="home-card" href="${homeUrl(base, h)}"><div class="thumb">${thumb}</div><div><div class="city">${t(h.city)}, Indiana</div><div class="name">${t(h.name)}</div><div class="status ${s.cls}">${s.text}</div></div></a>`;
+  return `<a class="other-card" href="${homeUrl(base, h)}"><div class="thumb">${thumb}</div><div><div class="eyebrow-sm">${t(servesLabel(h).toUpperCase() + ' · ' + h.city.toUpperCase())}</div><div class="name">${t(h.name)}</div><div class="meta">${t(residents(h))}</div></div></a>`;
 }
 
-function homeFeature(base, h) {
-  const s = status(h);
-  const photo = h.photos[0] ? `<div class="photo"><img src="${homeImg(base, h, 0)}" alt="${esc(h.photos[0][1])}, ${esc(h.name)}" loading="lazy"></div>` : `<div class="photo empty">Photos coming soon</div>`;
-  return `<a class="home-feature" href="${homeUrl(base, h)}" data-reveal>${photo}
-<div class="meta"><div><div class="city">${t(h.city)}, Indiana</div><div class="name">${t(h.name)}</div></div><div class="status ${s.cls}">${s.text}</div></div>
-<div class="go">Explore the house<span>→</span></div></a>`;
-}
-
-function inquiryForm(base, homeName) {
-  return `<div class="form-card" data-reveal>
-<form data-inquiry${D.FORM_ENDPOINT ? ` data-endpoint="${esc(D.FORM_ENDPOINT)}"` : ''}${homeName ? ` data-home="${esc(homeName)}"` : ''} novalidate>
-  <input type="hidden" name="audience" value="For myself"><input type="hidden" name="home" value="${esc(homeName || '')}">
-  <div class="lbl">I'm reaching out</div>
-  <div class="chips"><button type="button" class="chip" data-aud="self" aria-pressed="true">For myself</button><button type="button" class="chip" data-aud="loved" aria-pressed="false">For someone I love</button><button type="button" class="chip" data-aud="client" aria-pressed="false">For a client</button></div>
-  <div class="fields">
-    <label class="field" data-name-label>Your name<input name="name" placeholder="First and last name" autocomplete="name"></label>
-    <label class="field">Phone<input name="phone" type="tel" placeholder="(000) 000-0000" autocomplete="tel"></label>
-    <label class="field">Email<input name="email" type="email" placeholder="you@example.com" autocomplete="email"></label>
-    <label class="field" data-timing-label>Ideal move-in<select name="timing"><option>As soon as possible</option><option>Within 2 weeks</option><option>Within a month</option><option>Just exploring</option></select></label>
-  </div>
-  <label class="field full">How can we help?<textarea name="message" rows="3" placeholder="Where you are in recovery and what you’re looking for. Share whatever you’re comfortable with."></textarea></label>
-  <div class="form-note">Please don't include detailed medical information.</div>
-  <button type="submit" class="btn">Request a call back</button>
-  <div class="apply">Already ready to move in? <a href="${D.APPLY_URL}">Apply online</a></div>
-</form>
-<div class="thanks" hidden>
-  <img src="${base}assets/img/phoenix-mark.png" alt="">
-  <div class="t">Thank you. We'll call you soon.</div>
-  <div class="b">Someone from Phoenix will reach out personally, usually within one business day.</div>
-  <div class="row"><span data-nudge>Ready to move forward now?</span><a class="btn navy" href="${D.APPLY_URL}">Start your application</a></div>
-  <button type="button" class="again">Send another request</button>
-</div>
-</div>`;
+function mapSvg() {
+  const pos = {
+    Indianapolis: [[250.6, 318.4], [248.8, 318.2], [245.9, 311.1], [253.4, 312.0], [243.0, 320.5]],
+    Anderson: [[297.2, 277.5], [305.6, 270.5], [307.8, 274.2], [294.1, 275.6], [301.0, 281.6], [299.5, 268.8]]
+  };
+  let i = 0, orbs = '';
+  for (const c of cities) {
+    byCity(c).forEach((h, k) => {
+      const [x, y] = (pos[c] || pos.Anderson)[k % (pos[c] || pos.Anderson).length];
+      orbs += `<circle cx="${x}" cy="${y}" r="14" fill="url(#phxOrb)" class="orb" style="animation-delay:${(i * 0.45).toFixed(2)}s"></circle><circle cx="${x}" cy="${y}" r="2.6" fill="#FFE2BF"></circle>`;
+      i++;
+    });
+  }
+  const indy = byCity('Indianapolis').length, and = byCity('Anderson').length;
+  return `<svg viewBox="0 0 455 640" role="img" aria-label="Map of Indiana showing approximate locations of Phoenix homes in Indianapolis and Anderson" class="map-svg">
+  <defs><radialGradient id="phxOrb"><stop offset="0" stop-color="#FFD3A1" stop-opacity="1"/><stop offset=".35" stop-color="#F2A65A" stop-opacity=".75"/><stop offset="1" stop-color="#F2A65A" stop-opacity="0"/></radialGradient><radialGradient id="phxArea"><stop offset="0" stop-color="#F2A65A" stop-opacity=".28"/><stop offset="1" stop-color="#F2A65A" stop-opacity="0"/></radialGradient></defs>
+  <path d="${INDIANA_PATH}" fill="#13133A" stroke="rgba(255,255,255,.22)" stroke-width="1.2" stroke-linejoin="round"/>
+  <circle cx="272.4" cy="297.9" r="90" fill="url(#phxArea)"/>
+  ${orbs}
+  <g font-family="Montserrat, sans-serif">
+    <line x1="235.8" y1="328.2" x2="183.8" y2="364.2" stroke="rgba(255,255,255,.22)" stroke-width="1"/>
+    <text x="179.8" y="380.2" text-anchor="end" font-size="13" font-weight="600" letter-spacing="2" fill="#F5F1EA">INDIANAPOLIS</text>
+    <text x="179.8" y="398.2" text-anchor="end" font-size="11.5" fill="#9C9AB8">${indy} homes</text>
+    <line x1="312.9" y1="265.7" x2="348.9" y2="227.7" stroke="rgba(255,255,255,.22)" stroke-width="1"/>
+    <text x="352.9" y="213.7" font-size="13" font-weight="600" letter-spacing="2" fill="#F5F1EA">ANDERSON</text>
+    <text x="352.9" y="231.7" font-size="11.5" fill="#9C9AB8">${and} homes</text>
+  </g>
+</svg>`;
 }
 
 /* ---------- pages ---------- */
 function networkPage() {
   const base = '';
   const N = D.network;
-  const featured = D.homes.filter(h => h.photos.length).slice(0, 4);
   const body = `
-<section class="hero network"><div class="glow"></div><div class="inner">
-  ${mark(base, 'sm')}
-  <div class="eyebrow">${t(N.heroEyebrow)}</div>
-  <h1>${raw(N.heroTitle)}</h1>
+<section class="hero dark network"><div class="glow"></div><div class="inner">
+  ${mark(base, 'lg')}
+  <div class="eyebrow light">${t(N.heroEyebrow)}</div>
+  <h1>${t(N.heroTitle)}</h1>
   <p class="lede">${t(N.heroLede)}</p>
-  <div class="actions"><a class="btn" href="#availability">Check availability</a><span class="or-call">or call <strong>${t(D.PHONE)}</strong></span></div>
+  <div class="actions"><a class="btn" href="#availability">Apply now</a><span class="or-call">or call <a href="tel:${D.PHONE_TEL}">${esc(D.PHONE)}</a></span></div>
 </div></section>
 
-<section class="wrap" aria-label="A Phoenix home"><div class="hero-media">
-  <video muted loop playsinline preload="none" poster="${HERO}Phoenix_Hero_Video_Poster.jpg" data-src="${HERO}Phoenix_Hero_Video_Web.mp4" aria-label="A phoenix with glowing ember wings flying over a city skyline at sunset"></video>
-</div></section>
+<section class="hero-media-wrap" aria-label="Phoenix homes"><div class="wrap"><div class="hero-media">
+  <video muted loop playsinline preload="none" poster="${base}assets/network-reel-poster.jpg" data-src="${base}assets/network-reel.mp4" data-src-mobile="${base}assets/network-reel-mobile.mp4" aria-label="A phoenix flying over Indianapolis at sunset, followed by walkthroughs of each Phoenix home"></video>
+</div></div></section>
 
 <section class="wrap-md section" aria-label="Why Phoenix">
   <p class="statement" data-reveal>${t(N.statement)} <span>${t(N.statementMuted)}</span></p>
   <div class="proofs" data-reveal>${N.proofs.map(p => `<div><div class="t">${t(p.title)}</div><div class="b">${t(p.body)}</div></div>`).join('')}</div>
 </section>
 
-<section id="homes" class="section cream2"><div class="wrap">
-  <div class="section-head" data-reveal><h2 class="h-display-lg">Our homes</h2><p class="lede" style="margin:0;max-width:380px;font-size:15px">${t(N.homesLede)}</p></div>
-  <div class="homes-grid">${featured.map(h => homeFeature(base, h)).join('')}</div>
-  <p style="margin-top:40px"><a class="ul-link" href="${base}homes/">See all ${D.homes.length} homes</a></p>
+<section id="mission" class="wrap mission" aria-label="Mission and vision">
+  <div class="mv" data-reveal><div class="eyebrow">Our mission</div><p>${t(N.mission)}</p></div>
+  <div class="mv" data-reveal><div class="eyebrow">Our vision</div><p>${t(N.vision)}</p></div>
+</section>
+
+<section id="map" class="section dark"><div class="wrap map-wrap">
+  <div data-reveal>
+    <div class="eyebrow light">Where we are</div>
+    <h2 class="h-display-lg">${cap(word(total))} homes across central Indiana.</h2>
+    <p class="lede dim">${t(N.mapLede)}</p>
+    <div class="city-list">${cities.map(c => `<div><span class="serif">${esc(c)}</span><span>${esc(cityCounts(c))}</span></div>`).join('')}</div>
+  </div>
+  <div class="map-art" data-reveal>${mapSvg()}</div>
 </div></section>
 
-<section id="approach" class="section cream"><div class="wrap">
-  <div class="two-col end" data-reveal><h2 class="h-display-lg">${t(N.approachTitle)}</h2><p class="lede" style="margin:0;color:var(--ink2)">${t(N.approachLede)}</p></div>
+<section id="homes" class="section cream2"><div class="wrap">
+  <div class="section-head" data-reveal><h2 class="h-display-lg">Our homes</h2><p class="side-note">${cap(word(total))} homes in ${cities.join(' and ')}. ${t(N.homesLede)}</p></div>
+  ${homesByCity(base)}
+  ${D.SHOW_BEDS ? `<div class="beds-row" data-reveal><div><div class="eyebrow">Live bed availability</div><div class="serif beds-title">${t(N.bedsTitle)}</div></div><iframe src="${esc(D.BEDS_EMBED)}" title="Bed availability" width="320" height="242" loading="lazy"></iframe></div>` : ''}
+</div></section>
+
+<section id="approach" class="section dark"><div class="wrap">
+  <div class="two-col end" data-reveal><h2 class="h-display-lg">${t(N.approachTitle)}</h2><p class="lede dim" style="margin:0">${t(N.approachLede)}</p></div>
   <div class="pillars">${N.pillars.map(p => `<div class="pillar" data-reveal><div class="n">${t(p.n)}</div><div class="t">${t(p.title)}</div><div class="b">${t(p.body)}</div></div>`).join('')}</div>
 </div></section>
 
 <section class="section"><div class="wrap standards-wrap">
   <div class="photo-trio" data-reveal>${N.lifePhotos.map(p => `<div class="tile"><img src="${base}${p.src}" alt="${esc(p.alt)}" loading="lazy"></div>`).join('')}</div>
   <div data-reveal>
-    <h2 style="font-size:clamp(36px,4.4vw,58px);line-height:1.02">${t(N.standardsTitle)}</h2>
+    <h2 class="h-standards">${t(N.standardsTitle)}</h2>
     <p class="lede" style="margin-top:20px;max-width:500px">${t(N.standardsLede)}</p>
     <div class="standards">${N.standards.map(s => `<div><b>${t(s.title)}</b><span>${t(s.body)}</span></div>`).join('')}</div>
   </div>
@@ -223,56 +261,62 @@ function networkPage() {
   <div class="steps">${N.steps.map(s => `<div class="step" data-reveal><div class="n">${t(s.n)}</div><div class="t">${t(s.title)}</div><div class="b">${t(s.body)}</div></div>`).join('')}</div>
 </div></section>
 
-<section id="availability" class="avail"><div class="glow"></div><div class="inner">
+<section id="availability" class="avail dark"><div class="glow"></div><div class="inner">
   <div data-reveal>
-    <h2>${t(N.availTitle)}</h2>
-    <p class="lede">${t(N.availLede)}</p>
+    <h2>${t(N.applyTitle)}</h2>
+    <p class="lede dim">${t(N.applyLede)}</p>
     <div class="contact-lines">
-      <div><div class="k">Call or text</div><div class="phone">${t(D.PHONE)}</div></div>
+      <div><div class="k">Call or text</div><a class="phone" href="tel:${D.PHONE_TEL}">${esc(D.PHONE)}</a></div>
       <div><div class="k">Email</div><a href="mailto:${D.EMAIL}">${D.EMAIL}</a></div>
     </div>
   </div>
-  ${inquiryForm(base, '')}
+  <div data-reveal>${applyFrame('Phoenix Recovery Network application')}</div>
 </div></section>`;
-  return page({ base, kind: 'network', title: N.title, description: N.description, ogImage: 'https://www.phoenixrecoverynetwork.com/Phoenix_Hero_Video_Poster.jpg', body, current: 'network' });
+  const og = LAUNCH ? `${SITE}/assets/network-reel-poster.jpg` : `${SITE}/Phoenix_Hero_Video_Poster.jpg`;
+  return page({ base, kind: 'network', title: N.title, description: N.description, ogImage: og, body, current: 'network' });
 }
 
 function homesIndexPage() {
   const base = '../';
   const body = `
 <section class="section cream2"><div class="wrap">
-  <div class="section-head"><h2 class="h-display-lg">Our homes</h2><p class="lede" style="margin:0;max-width:380px;font-size:15px">${t(D.network.homesLede)}</p></div>
-  <div class="homes-grid compact">${D.homes.map(h => homeFeature(base, h)).join('')}</div>
+  <div class="section-head"><h2 class="h-display-lg">Our homes</h2><p class="side-note">${cap(word(total))} homes in ${cities.join(' and ')}. ${t(D.network.homesLede)}</p></div>
+  ${homesByCity(base)}
 </div></section>
-<section class="cta"><div class="glow"></div><div class="inner" data-reveal>
+<section class="cta dark"><div class="glow"></div><div class="inner" data-reveal>
   <img src="${base}assets/img/phoenix-mark.png" alt="">
   <h2>Not sure which home?</h2>
-  <p class="lede">Tell us where you are and what you need. We'll point you to the right house and check openings across the network.</p>
-  <div class="actions"><a class="btn" href="${base}#availability">Request a call back</a><span class="or-call">or call <strong>${t(D.PHONE)}</strong></span></div>
+  <p class="lede dim">Tell us where you are and what you need. We’ll point you to the right house and check openings across the network.</p>
+  <div class="actions"><a class="btn" href="${base}#availability">Apply now</a><span class="or-call">or call <a href="tel:${D.PHONE_TEL}">${esc(D.PHONE)}</a></span></div>
 </div></section>`;
-  return page({ base, kind: 'index', title: 'Our Homes | Phoenix Recovery Network', description: 'Every Phoenix home in Indiana, each with its own page: photos, daily life, neighborhood, cost and current openings.', body, current: 'homes' });
+  return page({ base, kind: 'index', title: 'Our Homes | Phoenix Recovery Network', description: `Every Phoenix home in Indiana, each with its own page: photos, daily life, neighborhood and current openings.`, body, current: 'homes' });
 }
 
 function homePage(h) {
   const base = '../../';
   const H = Object.assign({}, D.homeDefaults, h);
-  const name = H.name;
-  const others = D.homes.filter(o => o.slug !== h.slug).slice(0, 3);
-  const bt = bedsText(H);
-  const front = homeImg(base, H, 0);
+  const ppl = people(h), name = h.name;
+  const fill = s => String(s).replace(/\{name\}/g, name).replace(/\{people\}/g, ppl);
+  const sameCity = D.homes.filter(o => o.slug !== h.slug && o.city === h.city);
+  const others = sameCity.concat(D.homes.filter(o => o.slug !== h.slug && o.city !== h.city)).slice(0, 3);
+  const front = homeImg(base, H, 0), video = homeVideo(base, H);
   const body = `
-<section class="hero"><div class="glow"></div><div class="inner">
+<section class="hero dark house"><div class="glow"></div>
+  ${video ? `<video class="hero-bg" muted loop playsinline preload="none" poster="${front || ''}" data-src="${video}" data-desktop-only aria-hidden="true"></video><div class="hero-shade"></div>` : ''}
+  <div class="inner">
   ${mark(base)}
-  <div class="eyebrow">Sober living for men · ${t(H.city)}, Indiana</div>
+  <div class="eyebrow light">${t(`Sober living for ${servesLabel(h).toLowerCase()} · ${h.city}, Indiana`)}</div>
   <h1>${t(name)}</h1>
-  <p class="lede">${t(H.lede)}</p>
-  <div class="beds${typeof H.beds === 'number' ? '' : ' tbc'}"><span class="dot"></span>${esc(bt)}</div>
+  <p class="lede">${t(fill(H.lede))}</p>
+  ${D.SHOW_BEDS && h.bedsHouseId ? `<iframe class="beds-frame" src="${esc(D.BEDS_EMBED)}?houseId=${esc(h.bedsHouseId)}" title="Bed availability at ${esc(name)}" width="320" height="94" loading="lazy"></iframe>` : ''}
 </div></section>
 
 ${gallery(base, H)}
 
-<section id="house" class="wrap" style="padding-top:clamp(48px,6vw,80px)"><div class="glance">
-  ${H.glance.map(g => `<div><div class="k">${t(g.k)}</div><div class="v">${t(g.v)}</div><div class="sub">${t(g.sub)}</div></div>`).join('')}
+<section id="house" class="wrap glance-wrap"><div class="glance">
+  <div><div class="k">Serves</div><div class="v">${t(servesLabel(h) === 'Women' ? plain(h.serves) === 'Women' ? 'Women in recovery' : h.serves + ' in recovery' : h.serves + ' in recovery')}</div><div class="sub">Adults 18 and over</div></div>
+  <div><div class="k">Home type</div><div class="v">Structured sober living</div><div class="sub">Monitored residence</div></div>
+  <div><div class="k">Capacity</div><div class="v">${t(residents(h))}</div><div class="sub">Shared and single rooms</div></div>
 </div></section>
 
 <section class="wrap section"><div class="two-col">
@@ -280,58 +324,45 @@ ${gallery(base, H)}
   <div class="list-grid" data-reveal>${H.amenities.map(a => `<div>${t(a)}</div>`).join('')}</div>
 </div></section>
 
-<section id="life" class="section cream"><div class="wrap">
-  <div class="two-col end" data-reveal><h2 class="h-display">A week at ${t(name)}.</h2><p class="lede" style="margin:0;color:var(--ink2)">Every Phoenix home follows the same network standards. Here's how they show up in an ordinary week.</p></div>
+<section id="life" class="section dark"><div class="wrap">
+  <div class="two-col end" data-reveal><h2 class="h-display">A week at ${t(name)}.</h2><p class="lede dim" style="margin:0">Every Phoenix home follows the same network standards. Here’s how they show up in an ordinary week.</p></div>
   <div class="rhythm">${H.rhythm.map(r => `<div class="row" data-reveal><div class="when">${t(r.when)}</div><div><div class="t">${t(r.title)}</div><div class="b">${t(r.body)}</div></div></div>`).join('')}</div>
-  <p style="margin-top:32px"><a class="ul-link accent" href="${base}#approach">How Phoenix homes work</a></p>
+  <p style="margin-top:32px"><a class="ul-link light" href="${base}#approach">How Phoenix homes work</a></p>
 </div></section>
 
-<section class="wrap-md section"><div class="manager" data-reveal>
-  <div class="portrait">${H.manager.photo ? `<img src="${base}assets/homes/${h.slug}/${H.manager.photo}" alt="${esc(H.manager.name)}, house manager" loading="lazy">` : emptyTile('House manager portrait')}</div>
-  <div class="quote"><blockquote>“${t(H.manager.quote)}”</blockquote><div class="by"><strong>${t(H.manager.name)}</strong><span> · House manager</span></div></div>
-</div></section>
+${D.SHOW_FOUNDERS ? `<section id="founders" class="wrap-md section"><div class="founders" data-reveal>
+  <div class="portrait">${H.founders.photo ? `<img src="${base}assets/img/${H.founders.photo}" alt="${esc(H.founders.names)}">` : emptyTile('Darrell and Chad, black and white portrait')}</div>
+  <div><div class="eyebrow">Our founders</div><h2>${t(H.founders.headline)}</h2><p class="lede">${t(H.founders.body)}</p><div class="by"><strong>${t(H.founders.names)}</strong><span> · Founders, Phoenix Recovery Network</span></div></div>
+</div></section>` : ''}
 
-<section id="area" class="section cream2"><div class="wrap two-col center">
+<section id="area" class="section cream2"><div class="wrap">
   <div data-reveal>
     <h2 class="h-display">Close to what recovery runs on.</h2>
-    <p class="lede">${t(H.areaBody)}</p>
-    <div class="nearby">${H.nearby.map(n => `<div><span>${t(n.what)}</span><span>${t(n.dist)}</span></div>`).join('')}</div>
-  </div>
-  <div class="map" data-reveal>Neighborhood map · general area only, no pin · coming soon</div>
-</div></section>
-
-<section class="wrap section"><div class="two-col" data-reveal>
-  <div>
-    <div class="eyebrow">What it costs</div>
-    <div class="price"><span class="amt">${t(H.rent)}</span><span class="per">per week</span></div>
-    <p class="lede" style="font-size:15.5px;max-width:440px">${t(H.rentBody)}</p>
-  </div>
-  <div>
-    <div class="eyebrow muted">Rent includes</div>
-    <div class="list-grid under">${H.includes.map(i => `<div>${t(i)}</div>`).join('')}</div>
+    <p class="lede">${t(H.area)} The exact address is shared after your phone screening. Times are estimates.</p>
+    <div class="nearby">${H.nearby.map(n => `<div><span>${t(n[0])}</span><span>${t(n[1])}</span></div>`).join('')}</div>
   </div>
 </div></section>
 
-<section id="questions" class="wrap" style="padding-bottom:var(--section)"><div class="two-col" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr));gap:32px clamp(48px,6vw,112px)">
+<section id="questions" class="wrap section"><div class="two-col faq-wrap">
   <h2 class="h-display" data-reveal>Good to know.</h2>
-  <div class="faq" data-reveal>${H.faqs.map((f, i) => `<details${i === 0 ? ' open' : ''}><summary><span class="q">${t(f.q.replace('{name}', name))}</span></summary><div class="a">${t(f.a)}</div></details>`).join('')}</div>
+  <div class="faq" data-reveal>${H.faqs.map((f, i) => `<details${i === 0 ? ' open' : ''}><summary><span class="q">${t(fill(f.q))}</span></summary><div class="a">${t(fill(f.a))}</div></details>`).join('')}</div>
 </div></section>
 
-<section id="availability" class="cta"><div class="glow"></div><div class="inner" data-reveal>
+<section id="availability" class="cta dark apply"><div class="glow"></div><div class="inner" data-reveal>
   <img src="${base}assets/img/phoenix-mark.png" alt="">
-  <h2>Check availability at ${t(name)}.</h2>
-  <p class="lede">Confidential and no obligation. Family members and referring professionals are welcome to reach out on someone's behalf.</p>
-  <div class="actions"><a class="btn" href="${base}#availability">Request a call back</a><span class="or-call">or call <strong>${t(D.PHONE)}</strong></span></div>
-  <div class="apply">Already ready to move in? <a href="${D.APPLY_URL}">Apply online</a></div>
+  <h2>Apply to ${t(name)}.</h2>
+  <p class="lede dim">${t(H.applyLede)}</p>
+  ${applyFrame(`${name} application`)}
+  <div class="talk">Prefer to talk first? Call <a href="tel:${D.PHONE_TEL}">${esc(D.PHONE)}</a> or email <a class="accent" href="mailto:${D.EMAIL}">${D.EMAIL}</a></div>
 </div></section>
 
-<section class="wrap" style="padding:clamp(56px,7vw,96px) var(--gutter)">
-  <div class="section-head"><h2 style="font-size:clamp(30px,3.4vw,44px);line-height:1">Other Phoenix homes</h2><a class="ul-link" href="${base}homes/">See the whole network</a></div>
-  <div class="home-cards">${others.map(o => homeCard(base, o)).join('')}</div>
+<section class="wrap others-wrap">
+  <div class="section-head"><h2 class="h-others">Other Phoenix homes</h2><a class="ul-link" href="${base}homes/">See the whole network</a></div>
+  <div class="other-cards">${others.map(o => otherCard(base, o)).join('')}</div>
 </section>`;
-  const title = `${name.replace(/[\[\]]/g, '')} | Sober Living for Men in ${H.city.replace(/[\[\]]/g, '')}, Indiana`;
-  const description = `${name.replace(/[\[\]]/g, '')} is a structured sober living home for men in ${H.city.replace(/[\[\]]/g, '')}, Indiana. Furnished rooms, house leadership and peer support. Check bed availability.`;
-  return page({ base, kind: 'house', home: H, title, description, ogImage: front ? `https://www.phoenixrecoverynetwork.com/assets/homes/${h.slug}/${H.photos[0][0]}` : null, body, current: h.slug });
+  const title = `${name} | Sober Living for ${servesLabel(h)} in ${h.city}, Indiana`;
+  const description = `${name} is a structured sober living home for ${ppl} in ${h.city}, Indiana. Furnished rooms, house leadership and peer support. Apply online or call ${D.PHONE}.`;
+  return page({ base, kind: 'house', home: H, title, description, ogImage: front ? `${SITE}/assets/homes/${h.slug}/${H.photos[0][0]}` : null, body, current: h.slug });
 }
 
 /* ---------- write ---------- */
@@ -345,11 +376,16 @@ for (const f of ['favicon-32.png', 'favicon.png']) {
   const src = path.join(REPO, f), dst = path.join(OUT, 'assets', 'img', f);
   if (fs.existsSync(src)) fs.copyFileSync(src, dst);
 }
+// Remove generated home pages that no longer match a slug (e.g. after a rename).
+const homesDir = path.join(OUT, 'homes');
+if (fs.existsSync(homesDir)) for (const d of fs.readdirSync(homesDir)) {
+  const p = path.join(homesDir, d);
+  if (fs.statSync(p).isDirectory() && !D.homes.some(h => h.slug === d)) { fs.rmSync(p, { recursive: true }); console.log('removed stale', path.relative(REPO, p)); }
+}
 write('index.html', networkPage());
 write('homes/index.html', homesIndexPage());
 for (const h of D.homes) write(`homes/${h.slug}/index.html`, homePage(h));
-// Warn about photos referenced but missing on disk
-for (const h of D.homes) for (const [f] of h.photos) {
+for (const h of D.homes) for (const [f] of h.photos.concat(h.video ? [[h.video]] : [])) {
   const p = path.join(OUT, 'assets', 'homes', h.slug, f);
-  if (!fs.existsSync(p)) console.warn('MISSING photo:', path.relative(REPO, p));
+  if (!fs.existsSync(p)) console.warn('MISSING asset:', path.relative(REPO, p));
 }
