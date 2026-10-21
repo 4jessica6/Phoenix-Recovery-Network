@@ -56,8 +56,8 @@ function header(base, kind, home) {
   const root = base || './';
   if (kind === 'house') {
     return `<header class="site-header"><div class="inner">
-  <a class="brand" href="#top"><img src="${base}assets/img/phoenix-mark.png" alt="${esc(home.name)}"><span class="lockup"><span class="l1">${esc(home.name.toUpperCase())}</span><span class="l2">A PHOENIX RECOVERY NETWORK HOME</span></span></a>
-  <nav class="site-nav" aria-label="This house"><a href="#house">The house</a><a href="#life">Daily life</a><a href="#area">Neighborhood</a><a href="#questions">Questions</a><a class="pill-cta" data-apply-cta href="#availability">Apply now</a></nav>
+  <a class="brand" href="${root}" title="Phoenix Recovery Network"><img src="${base}assets/img/phoenix-mark.png" alt="${esc(home.name)}"><span class="lockup"><span class="l1">${esc(home.name.toUpperCase())}</span><span class="l2">A PHOENIX RECOVERY NETWORK HOME</span></span></a>
+  <nav class="site-nav" aria-label="This house"><a href="${root}">Network home</a><a href="#house">The house</a><a href="#life">Daily life</a><a href="#area">Neighborhood</a><a href="#questions">Questions</a><a class="pill-cta" data-apply-cta href="#availability">Apply now</a></nav>
 </div></header>`;
   }
   const l = h => (kind === 'network' ? h : root + h);
