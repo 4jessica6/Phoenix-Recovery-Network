@@ -126,7 +126,9 @@ const homes = [
   { slug: '1921-w-9th',     name: 'Phoenix [9th Street]', city: '[Anderson]',
     photos: [['front.jpg','Front of the house'],['kitchen.jpg','Kitchen'],['living.jpg','Living room'],['bath.jpg','Bathroom'],['kitchen-2.jpg','Kitchen sink and window']],
     video: null },
-  { slug: '2221-central',   name: 'Phoenix [Central · Anderson]', city: 'Anderson', photos: [], video: null }
+  { slug: '2221-central',   name: 'Phoenix [Central · Anderson]', city: 'Anderson', 
+    photos: [['front.jpg','Front of the house'],['living.jpg','Living room'],['kitchen.jpg','Kitchen'],['bath.jpg','Bathroom'],['backyard.jpg','Back yard']],
+    video: null }
 ];
 
 module.exports = { PHONE, EMAIL, APPLY_URL, FORM_ENDPOINT, network, homeDefaults, homes };
