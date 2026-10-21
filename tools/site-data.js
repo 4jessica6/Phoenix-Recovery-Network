@@ -119,7 +119,7 @@ const homes = [
     photos: [['front.jpg','Front of the house'],['hall.jpg','Front room and staircase'],['kitchen.jpg','Kitchen'],['bath.jpg','Bathroom'],['laundry.jpg','Laundry and wash room']],
     video: 'walkthrough.mp4' },
   { slug: '925-w-7th',      name: 'Phoenix [7th Street]', city: 'Anderson',
-    photos: [['front.jpg','Front of the house'],['exterior-2.jpg','Side of the house']], video: null },
+    photos: [['front.jpg','Front of the house'],['living.jpg','Living room'],['kitchen.jpg','Kitchen'],['bath.jpg','Bathroom'],['backyard.jpg','Back of the house and patio']], video: null },
   { slug: '1302-e-8th',     name: 'Phoenix [8th Street]', city: 'Anderson',
     photos: [['front.jpg','Front of the house'],['living.jpg','Living room'],['kitchen.jpg','Kitchen'],['kitchen-2.jpg','Kitchen, sink and pantry'],['dining.jpg','Dining room']],
     video: null },
