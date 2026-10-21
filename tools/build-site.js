@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Builds the static site into preview/ from tools/site-data.js. No dependencies.
 //   node tools/build-site.js            → preview build (noindex, preview bar, [placeholders] tinted)
-//   node tools/build-site.js --launch   → launch build (no bar, indexable, final OG image)
+//   node tools/build-site.js --launch   → launch build written to the repo root (no bar, indexable, sitemap.xml, 404.html)
 // Layout and copy follow the Claude Design handoff v8 (2026-10-21).
 'use strict';
 const fs = require('fs');
@@ -10,7 +10,7 @@ const D = require('./site-data.js');
 
 const LAUNCH = process.argv.includes('--launch');
 const REPO = path.join(__dirname, '..');
-const OUT = path.join(REPO, 'preview');
+const OUT = LAUNCH ? REPO : path.join(REPO, 'preview');
 const SITE = 'https://www.phoenixrecoverynetwork.com';
 const INDIANA_PATH = fs.readFileSync(path.join(__dirname, 'indiana-path.txt'), 'utf8').trim();
 
@@ -364,6 +364,25 @@ ${D.SHOW_FOUNDERS ? `<section id="founders" class="wrap-md section"><div class="
   return page({ base, kind: 'house', home: H, title, description, ogImage: front ? `${SITE}/assets/homes/${h.slug}/${H.photos[0][0]}` : null, body, current: h.slug });
 }
 
+function notFoundPage() {
+  const base = '/';
+  const body = `
+<section class="cta dark"><div class="glow"></div><div class="inner">
+  <img src="${base}assets/img/phoenix-mark.png" alt="">
+  <h2>That page isn’t here.</h2>
+  <p class="lede dim">The link may be out of date. Every Phoenix home has its own page, and the application is one click away.</p>
+  <div class="actions"><a class="btn" href="${base}homes/">See our homes</a><span class="or-call">or call <a href="tel:${D.PHONE_TEL}">${esc(D.PHONE)}</a></span></div>
+</div></section>`;
+  const html = page({ base, kind: 'index', title: 'Page not found | Phoenix Recovery Network', description: 'That page isn’t here. Find every Phoenix home or apply online.', body, current: '' });
+  return LAUNCH ? html.replace('</title>', '</title>\n<meta name="robots" content="noindex">') : html;
+}
+function sitemap() {
+  const today = new Date().toISOString().slice(0, 10);
+  const urls = ['/', '/homes/'].concat(D.homes.map(h => '/homes/' + h.slug + '/'));
+  return '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+    + urls.map(u => '  <url><loc>' + SITE + u + '</loc><lastmod>' + today + '</lastmod></url>').join('\n') + '\n</urlset>\n';
+}
+
 /* ---------- write ---------- */
 function write(rel, html) {
   const file = path.join(OUT, rel);
@@ -382,6 +401,8 @@ if (fs.existsSync(homesDir)) for (const d of fs.readdirSync(homesDir)) {
   if (fs.statSync(p).isDirectory() && !D.homes.some(h => h.slug === d)) { fs.rmSync(p, { recursive: true }); console.log('removed stale', path.relative(REPO, p)); }
 }
 write('index.html', networkPage());
+write('404.html', notFoundPage());
+if (LAUNCH) write('sitemap.xml', sitemap());
 write('homes/index.html', homesIndexPage());
 for (const h of D.homes) write(`homes/${h.slug}/index.html`, homePage(h));
 for (const h of D.homes) for (const [f] of h.photos.concat(h.video ? [[h.video]] : [])) {

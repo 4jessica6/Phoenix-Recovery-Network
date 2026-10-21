@@ -1,31 +1,32 @@
-# Phoenix Recovery Network — Coming Soon page
+# Phoenix Recovery Network — website
 
-Single-file teaser page for https://www.phoenixrecoverynetwork.com/, served from the site root.
+Static site for https://www.phoenixrecoverynetwork.com/, hosted on GitHub Pages from the `main` branch root.
+Design: Claude Design handoff v8 (October 2026). No frameworks, no build dependencies beyond Node.
 
-## Files
+## Layout
 
-- `index.html` — the page (inline CSS and JS, no build step; Google Fonts Cormorant Garamond + Inter)
-- `Phoenix_Hero_Video_Web.mp4` — 1080p desktop background video
-- `Phoenix_Hero_Video_Mobile_720p.mp4` — served under 768px wide
-- `Phoenix_Hero_Video_Poster.jpg` — video poster, reduced-motion fallback, and OG/Twitter image
-- `PRN_White_web.png` — logo
-- `favicon.png`, `favicon-32.png` — icons
-
-All assets are referenced by relative path, so they must stay next to `index.html`.
+- `index.html`, `homes/`, `404.html`, `sitemap.xml` — generated pages (do not edit by hand)
+- `assets/` — stylesheet, script, fonts, logos, per-home photos and walkthrough reels, the homepage header reel
+- `tools/site-data.js` — **all copy and per-home details live here** (names, cities, capacity, nearby distances, photos, phone, Sobriety Hub links, feature flags)
+- `tools/build-site.js` — generator
+- `tools/indiana-path.txt` — SVG outline used by the map
+- `CNAME`, `robots.txt` — hosting
 
 ## Editing
 
-- **Launch time**: `LAUNCH_DATE` at the top of the script in `index.html`
-  (currently `2026-10-23T00:01:00-04:00`, 12:01 AM Indianapolis time).
-- **Preview the "We're live" view**: add `?test=10` to the URL to count down from 10 seconds.
-- **Colors**: CSS variables in `:root`.
-- **Phone number**: commented block marked `PHONE NUMBER PLACEHOLDER`.
-- **Post-launch button**: marked `POST-LAUNCH BUTTON LINK` (href is `/` for now).
-- The OG/Twitter image tags use the absolute URL
-  `https://www.phoenixrecoverynetwork.com/Phoenix_Hero_Video_Poster.jpg`, so the poster must be
-  published at the site root (or those tags updated).
+1. Change `tools/site-data.js`.
+2. Run `node tools/build-site.js --launch` to regenerate the live pages at the repo root, then commit and push. GitHub Pages rebuilds in about a minute.
+3. For a client preview before going live, run `node tools/build-site.js` (no flag). That writes a `noindex` copy with a preview bar into `preview/`; delete the folder again before committing, or keep it out of the commit.
 
-## Hosting notes
+## Feature flags (in `site-data.js`)
 
-The host must serve the `.mp4` files as `video/mp4` with HTTP byte-range support, or iPhones
-will not play the background video.
+- `SHOW_BEDS` — Sobriety Hub live-occupancy widgets on the homepage and house pages
+- `SHOW_FOUNDERS` — "Our founders" block on house pages (needs the story and portrait)
+
+## Adding a home
+
+Add an entry to `homes` in `site-data.js`, put its photos and `walkthrough.mp4` under `assets/homes/<slug>/`, rebuild. Counts, the map, the footer and the sitemap update automatically. Street addresses are never published; slugs use house names only.
+
+## Walkthrough reels
+
+Made with the `listing-walkthrough` skill (OpenArt image-to-video + ffmpeg). Working files and the header-reel master live outside the repo in `Downloads\Phoenix Recovery Network Design\walkthrough-videos\`.
