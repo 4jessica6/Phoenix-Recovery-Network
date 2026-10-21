@@ -148,7 +148,7 @@ h1,h2,h3{font-family:var(--serif);font-weight:300;margin:0;letter-spacing:-.02em
 }
 
 /* Sections */
-.section{padding:var(--section) 0}
+.section{padding-top:var(--section);padding-bottom:var(--section)}
 .section.cream2{background:var(--cream2)}
 .glance-wrap{padding-top:clamp(48px,6vw,80px)}
 .glance{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:28px;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:28px 0}
