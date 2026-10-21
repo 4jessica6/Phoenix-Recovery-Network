@@ -119,16 +119,16 @@ const homes = [
     photos: [['front.jpg','Front of the house'],['hall.jpg','Front room and staircase'],['kitchen.jpg','Kitchen'],['bath.jpg','Bathroom'],['laundry.jpg','Laundry and wash room']],
     video: 'walkthrough.mp4' },
   { slug: '925-w-7th',      name: 'Phoenix [7th Street]', city: 'Anderson',
-    photos: [['front.jpg','Front of the house'],['living.jpg','Living room'],['kitchen.jpg','Kitchen'],['bath.jpg','Bathroom'],['backyard.jpg','Back of the house and patio']], video: null },
+    photos: [['front.jpg','Front of the house'],['living.jpg','Living room'],['kitchen.jpg','Kitchen'],['bath.jpg','Bathroom'],['backyard.jpg','Back of the house and patio']], video: 'walkthrough.mp4' },
   { slug: '1302-e-8th',     name: 'Phoenix [8th Street]', city: 'Anderson',
     photos: [['front.jpg','Front of the house'],['living.jpg','Living room'],['kitchen.jpg','Kitchen'],['kitchen-2.jpg','Kitchen, sink and pantry'],['dining.jpg','Dining room']],
-    video: null },
+    video: 'walkthrough.mp4' },
   { slug: '1921-w-9th',     name: 'Phoenix [9th Street]', city: '[Anderson]',
     photos: [['front.jpg','Front of the house'],['kitchen.jpg','Kitchen'],['living.jpg','Living room'],['bath.jpg','Bathroom'],['kitchen-2.jpg','Kitchen sink and window']],
-    video: null },
+    video: 'walkthrough.mp4' },
   { slug: '2221-central',   name: 'Phoenix [Central · Anderson]', city: 'Anderson', 
     photos: [['front.jpg','Front of the house'],['living.jpg','Living room'],['kitchen.jpg','Kitchen'],['bath.jpg','Bathroom'],['backyard.jpg','Back yard']],
-    video: null }
+    video: 'walkthrough.mp4' }
 ];
 
 module.exports = { PHONE, EMAIL, APPLY_URL, FORM_ENDPOINT, network, homeDefaults, homes };
