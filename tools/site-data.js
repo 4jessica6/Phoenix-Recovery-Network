@@ -128,12 +128,7 @@ const homes = [
     nearby: [['AA meeting', '15 min walk'], ['NA meeting', '15 min walk'], ['Bus stop', '5 min walk'], ['Grocery store', '15 min walk'], ['Public library', '5 min drive'], ['Park', '10 min walk'], ['Hospital', '5 min drive']],
     photos: [['front.jpg', 'Front of the house'], ['living.jpg', 'Living room'], ['kitchen.jpg', 'Kitchen'], ['kitchen-2.jpg', 'Kitchen, sink and pantry'], ['dining.jpg', 'Dining room']],
     video: 'walkthrough.mp4' },
-  // 9th Street is not in the v8 design handoff (which lists seven homes). Kept here with placeholders until the client confirms.
-  { slug: '9th-street-house', name: '9th Street House', city: 'Anderson', serves: '[Men]', capacity: '[X]', tbc: true,
-    area: 'A quiet residential street in [neighborhood], Anderson.',
-    nearby: [['AA meeting', '[X] min walk'], ['NA meeting', '[X] min walk'], ['Bus stop', '[X] min walk'], ['Grocery store', '[X] min drive'], ['Park', '[X] min walk'], ['Hospital', '[X] min drive']],
-    photos: [['front.jpg', 'Front of the house'], ['kitchen.jpg', 'Kitchen'], ['living.jpg', 'Living room'], ['bath.jpg', 'Bathroom'], ['kitchen-2.jpg', 'Kitchen sink and window']],
-    video: 'walkthrough.mp4' },
+  // 9th Street House: purchase pending (2026-10-21). Photos + reel kept in Downloads…walkthrough-videos921-w-9th; add back here when the client confirms.
   { slug: '7th-street-house', name: '7th Street House', city: 'Anderson', serves: 'Women', capacity: 6,
     area: 'A quiet residential street on Anderson’s west side, close to downtown.',
     nearby: [['AA meeting', '15 min walk'], ['NA meeting', '5 min walk'], ['Bus stop', '15 min walk'], ['Grocery store', '5 min drive'], ['Public library', '5 min drive'], ['Park', '5 min walk'], ['Hospital', '5 min drive']],
