@@ -199,7 +199,9 @@ function networkPage() {
   const base = '';
   const N = D.network;
   const body = `
-<section class="hero dark network"><div class="glow"></div><div class="inner">
+<section class="hero dark network">
+  <video class="hero-bg" muted loop playsinline preload="none" poster="${base}assets/network-reel-poster.jpg" data-src="${base}assets/network-reel.mp4" data-src-mobile="${base}assets/network-reel-mobile.mp4" aria-hidden="true"></video><div class="hero-shade"></div>
+  <div class="glow"></div><div class="inner">
   ${mark(base, 'lg')}
   <div class="eyebrow light">${t(N.heroEyebrow)}</div>
   <h1>${t(N.heroTitle)}</h1>
@@ -207,9 +209,6 @@ function networkPage() {
   <div class="actions"><a class="btn" href="#availability">Apply now</a><span class="or-call">or call <a href="tel:${D.PHONE_TEL}">${esc(D.PHONE)}</a></span></div>
 </div></section>
 
-<section class="hero-media-wrap" aria-label="Phoenix homes"><div class="wrap"><div class="hero-media">
-  <video muted loop playsinline preload="none" poster="${base}assets/network-reel-poster.jpg" data-src="${base}assets/network-reel.mp4" data-src-mobile="${base}assets/network-reel-mobile.mp4" aria-label="A phoenix flying over Indianapolis at sunset, followed by walkthroughs of each Phoenix home"></video>
-</div></div></section>
 
 <section class="wrap-md section" aria-label="Why Phoenix">
   <p class="statement" data-reveal>${t(N.statement)} <span>${t(N.statementMuted)}</span></p>
