@@ -9,7 +9,7 @@ const EMAIL = 'info@phoenixrecoverynetwork.com';
 const APPLY_URL = 'https://www.sobrietyhub.app/dashboard/forms/public/36b0f645-35b6-43c3-9c63-622fb5df62e3';
 const BEDS_EMBED = 'https://www.sobrietyhub.app/embed/13862/occupancy';
 const SHOW_BEDS = false;      // Sobriety Hub live-occupancy widgets (homepage + per house). Turn on when the client is ready.
-const SHOW_FOUNDERS = false;  // "Our founders" block on house pages. Needs the story and a portrait from the client.
+const SHOW_FOUNDERS = true;   // "Our founders": full story on the homepage, short version with a link on each house page.
 
 const network = {
   title: 'Phoenix Recovery Network | Sober Living Homes in Indiana',
@@ -69,7 +69,22 @@ const network = {
   ],
   applyTitle: 'Apply now.',
   applyLede: 'Applications go straight to our team and are kept confidential. Family members and referring professionals are welcome to call or email us directly.',
-  bedsTitle: 'Openings across the network, updated automatically.'
+  bedsTitle: 'Openings across the network, updated automatically.',
+  // Founders story as sent by the client on 2026-10-22, lightly edited for length. Photos: assets/img/founder-*.jpg (shown in black and white per the design).
+  founders: {
+    headline: 'Meet the visionaries behind Phoenix Recovery Network.',
+    paragraphs: [
+      'Phoenix Recovery Network was built on a foundation of shared purpose and an unyielding belief in human resilience. Co-founders Chad Edmonson and Darrell Mitchell joined forces with a singular vision: to establish a stable, supportive environment where individuals recovering from substance use disorders can rebuild their lives from the ground up.',
+      'What sets Chad and Darrell apart is a blend of personal truth and professional mastery. Both bring lived experience from their own recovery journeys, allowing them to view the challenges of addiction with radical empathy and deep authenticity. They understand firsthand what it takes to step out of the ashes, pick up the pieces, and rebuild.',
+      'That personal foundation is backed by years of industry and business leadership. Darrell has spent years designing, launching and operating some of the most innovative and respected recovery housing programs in the country, setting national standards for peer-led care. Chad is a successful entrepreneur who has built and led organizations run on the principles of recovery, hiring and mentoring people in recovery within his own ventures and proving the real-world power of purpose-driven leadership and community re-entry.',
+      'Phoenix Recovery Network is the culmination of their life’s work. By merging their personal recovery milestones with operational and entrepreneurial expertise, Chad and Darrell continue to awaken possibilities, create lasting hope, and inspire community change in the markets they serve.'
+    ],
+    excerpt: 'Co-founders Chad Edmonson and Darrell Mitchell both bring lived experience from their own recovery, backed by years of building and running recovery housing programs and recovery-first businesses.',
+    people: [
+      { name: 'Chad Edmonson', role: 'Co-founder', photo: 'founder-chad.jpg' },
+      { name: 'Darrell Mitchell', role: 'Co-founder', photo: 'founder-darrell.jpg' }
+    ]
+  }
 };
 
 // Shared across every house page. {name} and {people} are filled in per home ("men" / "women").
@@ -92,7 +107,7 @@ const homeDefaults = {
     { q: 'How fast can I move in?', a: 'When a bed is open, most people go from first call to move-in within a few days of screening and a tour.' }
   ],
   applyLede: 'Applications go straight to our team and are kept confidential. Family members and referring professionals are welcome to call on someone’s behalf.',
-  founders: { headline: '[Founders story headline]', body: '[Darrell and Chad’s story, coming from the client.]', names: 'Darrell Mitchell & Chad [Last name]', photo: null }
+  // (founders content lives in network.founders)
 };
 
 // One entry per home, in display order. `photos` are [file, caption] pairs under preview/assets/homes/<slug>/;

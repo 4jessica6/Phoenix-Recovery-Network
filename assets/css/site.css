@@ -166,11 +166,19 @@ h1,h2,h3{font-family:var(--serif);font-weight:300;margin:0;letter-spacing:-.02em
 .rhythm .t{font-family:var(--serif);font-size:26px}
 .rhythm .b{font-size:14.5px;line-height:1.7;color:var(--on-dark-dim);margin-top:6px}
 @media (max-width:560px){.rhythm .row{grid-template-columns:1fr;gap:6px}}
-.founders{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:40px clamp(40px,6vw,88px);align-items:center}
-.founders .portrait{aspect-ratio:4/5;overflow:hidden;border-radius:2px;background:var(--sand);filter:grayscale(1);min-height:360px}
+.founders{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:40px clamp(40px,6vw,88px);align-items:start}
+.founders.compact{align-items:center}
+.founders .portraits{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:560px}
+.founders figure{margin:0}
+.founders .portrait{aspect-ratio:4/5;overflow:hidden;border-radius:2px;background:var(--sand);filter:grayscale(1)}
 .founders .portrait img{display:block;width:100%;height:100%;object-fit:cover}
+.founders figcaption{margin-top:10px;display:flex;flex-direction:column;font-size:13px;line-height:1.4}
+.founders figcaption strong{font-weight:600}
+.founders figcaption span{color:var(--muted)}
 .founders h2{font-size:clamp(34px,4.4vw,56px);line-height:1.02;margin-top:16px}
-.founders .by{font-size:14px;margin-top:22px}
+.founders .lede{margin-top:18px}
+.founders .lede:first-of-type{margin-top:22px}
+.founders .by{font-size:14px;margin-top:24px}
 .founders .by strong{font-weight:600}
 .founders .by span{color:var(--muted)}
 .nearby{margin-top:32px;border-top:1px solid var(--rule)}

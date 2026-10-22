@@ -122,6 +122,7 @@ ${footer(base, kind)}
 function mark(base, size) {
   return `<div class="mark${size === 'lg' ? ' lg' : ''}" data-phx-mark data-embers><div class="halo"></div><div class="float"><div class="flap"><img src="${base}assets/img/phoenix-mark.png" alt=""></div></div></div>`;
 }
+const portraits = (base) => `<div class="portraits" data-reveal>${D.network.founders.people.map(p => `<figure><div class="portrait"><img src="${base}assets/img/${p.photo}" alt="${esc(p.name)}" loading="lazy"></div><figcaption><strong>${esc(p.name)}</strong><span>${esc(p.role)}</span></figcaption></figure>`).join('')}</div>`;
 const emptyTile = (label, cls = 'tile') => `<div class="${cls} empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-7 7"/></svg><span>${esc(label)}</span></div>`;
 const applyFrame = (title) => `<div class="apply-card">
   <iframe src="${esc(D.APPLY_URL)}" title="${esc(title)}" loading="lazy"></iframe>
@@ -219,6 +220,16 @@ function networkPage() {
   <div class="mv" data-reveal><div class="eyebrow">Our mission</div><p>${t(N.mission)}</p></div>
   <div class="mv" data-reveal><div class="eyebrow">Our vision</div><p>${t(N.vision)}</p></div>
 </section>
+
+${D.SHOW_FOUNDERS ? `<section id="founders" class="section cream2"><div class="wrap founders">
+  ${portraits(base)}
+  <div data-reveal>
+    <div class="eyebrow">Our founders</div>
+    <h2>${t(N.founders.headline)}</h2>
+    ${N.founders.paragraphs.map(p => `<p class="lede">${t(p)}</p>`).join('')}
+    <div class="by"><strong>${esc(N.founders.people.map(p => p.name).join(' & '))}</strong><span> · Co-founders, Phoenix Recovery Network</span></div>
+  </div>
+</div></section>` : ''}
 
 <section id="map" class="section dark"><div class="wrap map-wrap">
   <div data-reveal>
@@ -329,9 +340,14 @@ ${gallery(base, H)}
   <p style="margin-top:32px"><a class="ul-link light" href="${base}#approach">How Phoenix homes work</a></p>
 </div></section>
 
-${D.SHOW_FOUNDERS ? `<section id="founders" class="wrap-md section"><div class="founders" data-reveal>
-  <div class="portrait">${H.founders.photo ? `<img src="${base}assets/img/${H.founders.photo}" alt="${esc(H.founders.names)}">` : emptyTile('Darrell and Chad, black and white portrait')}</div>
-  <div><div class="eyebrow">Our founders</div><h2>${t(H.founders.headline)}</h2><p class="lede">${t(H.founders.body)}</p><div class="by"><strong>${t(H.founders.names)}</strong><span> · Founders, Phoenix Recovery Network</span></div></div>
+${D.SHOW_FOUNDERS ? `<section id="founders" class="section"><div class="wrap founders compact">
+  ${portraits(base)}
+  <div data-reveal>
+    <div class="eyebrow">Our founders</div>
+    <h2>${t(D.network.founders.headline)}</h2>
+    <p class="lede">${t(D.network.founders.excerpt)}</p>
+    <p style="margin-top:24px"><a class="ul-link" href="${base}#founders">Read their story</a></p>
+  </div>
 </div></section>` : ''}
 
 <section id="area" class="section cream2"><div class="wrap">
