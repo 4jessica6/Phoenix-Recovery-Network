@@ -63,7 +63,7 @@ function header(base, kind, home) {
   const l = h => (kind === 'network' ? h : root + h);
   return `<header class="site-header"><div class="inner">
   <a class="brand" href="${root}"><img src="${base}assets/img/phoenix-mark.png" alt="Phoenix Recovery Network"><span class="lockup"><span class="l1">PHOENIX</span><span class="l2">RECOVERY NETWORK</span></span></a>
-  <nav class="site-nav" aria-label="Site"><a href="${base}homes/">Homes</a><a href="${l('#approach')}">Our approach</a><a href="${l('#families')}">Families &amp; referrals</a><a class="pill-cta" data-apply-cta href="${l('#availability')}">Apply now</a></nav>
+  <nav class="site-nav" aria-label="Site"><a href="${base}homes/">Homes</a><a href="${l('#approach')}">Our approach</a>${D.SHOW_FOUNDERS ? `<a href="${l('#founders')}">Our founders</a>` : ''}<a href="${l('#families')}">Families &amp; referrals</a><a class="pill-cta" data-apply-cta href="${l('#availability')}">Apply now</a></nav>
 </div></header>`;
 }
 
@@ -75,7 +75,7 @@ function footer(base, kind) {
   const second = kind === 'house'
     ? `<div class="col"><div class="k">This house</div><a href="#house">The house</a><a href="#life">Daily life</a><a href="#questions">Questions</a><a href="#availability">Apply now</a></div>
 <div class="col"><div class="k">The network</div><a href="${root}">Phoenix Recovery Network</a><a href="${root}#approach">Our approach</a><a href="${base}homes/">All homes</a></div>`
-    : `<div class="col"><div class="k">Explore</div><a href="${base}homes/">Our homes</a><a href="${root}#mission">Mission &amp; vision</a><a href="${root}#approach">Our approach</a><a href="${root}#families">Families &amp; referrals</a><a href="${root}#availability">Apply now</a></div>
+    : `<div class="col"><div class="k">Explore</div><a href="${base}homes/">Our homes</a><a href="${root}#mission">Mission &amp; vision</a>${D.SHOW_FOUNDERS ? `<a href="${root}#founders">Our founders</a>` : ''}<a href="${root}#approach">Our approach</a><a href="${root}#families">Families &amp; referrals</a><a href="${root}#availability">Apply now</a></div>
 <div class="col"><div class="k">Homes</div>${cities.map(c => `<a href="${base}homes/#${c.toLowerCase()}">${esc(c)} · ${byCity(c).length} homes</a>`).join('')}</div>`;
   return `<footer class="site-footer">
 <div class="cols">${first}${second}

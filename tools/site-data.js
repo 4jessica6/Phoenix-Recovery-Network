@@ -70,16 +70,17 @@ const network = {
   applyTitle: 'Apply now.',
   applyLede: 'Applications go straight to our team and are kept confidential. Family members and referring professionals are welcome to call or email us directly.',
   bedsTitle: 'Openings across the network, updated automatically.',
-  // Founders story as sent by the client on 2026-10-22, lightly edited for length. Photos: assets/img/founder-*.jpg (shown in black and white per the design).
+  // Founders story exactly as sent by the client on 2026-10-22 (word for word at Jessica's request). Photos: assets/img/founder-*.jpg, shown in color.
   founders: {
-    headline: 'Meet the visionaries behind Phoenix Recovery Network.',
+    headline: 'Meet the Visionaries Behind Phoenix Recovery Network',
     paragraphs: [
-      'Phoenix Recovery Network was built on a foundation of shared purpose and an unyielding belief in human resilience. Co-founders Chad Edmonson and Darrell Mitchell joined forces with a singular vision: to establish a stable, supportive environment where individuals recovering from substance use disorders can rebuild their lives from the ground up.',
-      'What sets Chad and Darrell apart is a blend of personal truth and professional mastery. Both bring lived experience from their own recovery journeys, allowing them to view the challenges of addiction with radical empathy and deep authenticity. They understand firsthand what it takes to step out of the ashes, pick up the pieces, and rebuild.',
-      'That personal foundation is backed by years of industry and business leadership. Darrell has spent years designing, launching and operating some of the most innovative and respected recovery housing programs in the country, setting national standards for peer-led care. Chad is a successful entrepreneur who has built and led organizations run on the principles of recovery, hiring and mentoring people in recovery within his own ventures and proving the real-world power of purpose-driven leadership and community re-entry.',
-      'Phoenix Recovery Network is the culmination of their life’s work. By merging their personal recovery milestones with operational and entrepreneurial expertise, Chad and Darrell continue to awaken possibilities, create lasting hope, and inspire community change in the markets they serve.'
+      'Phoenix Recovery Network was built on a foundation of shared purpose and an unyielding belief in human resilience. Co-Founders Chad Edmonson and Darrell Mitchell joined forces with a singular vision: to establish a stable, supportive environment where individuals recovering from substance use disorders can rebuild their lives from the ground up.',
+      'What sets Chad and Darrell apart is a profound blend of personal truth and professional mastery. Both co-founders bring invaluable lived experience from their own personal recovery journeys, allowing them to view the challenges of addiction with radical empathy and deep authenticity. They understand firsthand what it takes to step out of the ashes, pick up the pieces, and actively rebuild and transform their own lives.',
+      'This personal foundation is backed by years of proven industry and business leadership. Darrell has spent years designing, launching, and operating some of the most innovative and highly respected recovery housing programs in the country, setting national standards for peer-led care. Complementing this operational blueprint, Chad is a highly successful entrepreneur who has spent years building and leading organizations run entirely on the foundational principles of recovery. By actively hiring and mentoring individuals in recovery within his own ventures, Chad has demonstrated the real-world power of purpose-driven leadership and community re-entry.',
+      'Phoenix Recovery Network is the culmination of their life’s work. By merging their personal recovery milestones with elite operational and entrepreneurial expertise, Chad and Darrell continue to awaken possibilities, create lasting hope, and inspire profound community change in the markets they serve.'
     ],
-    excerpt: 'Co-founders Chad Edmonson and Darrell Mitchell both bring lived experience from their own recovery, backed by years of building and running recovery housing programs and recovery-first businesses.',
+    // House pages show this one sentence from the story, then link to the full section on the homepage.
+    excerpt: 'Co-Founders Chad Edmonson and Darrell Mitchell joined forces with a singular vision: to establish a stable, supportive environment where individuals recovering from substance use disorders can rebuild their lives from the ground up.',
     people: [
       { name: 'Chad Edmonson', role: 'Co-founder', photo: 'founder-chad.jpg' },
       { name: 'Darrell Mitchell', role: 'Co-founder', photo: 'founder-darrell.jpg' }
