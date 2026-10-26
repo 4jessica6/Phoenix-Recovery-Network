@@ -149,6 +149,7 @@ function homeCard(base, h) {
   <div class="eyebrow-sm">${t(servesLabel(h).toUpperCase() + ' · ' + h.city.toUpperCase())}</div>
   <div class="name">${t(h.name)}</div>
   <div class="meta">${t(residents(h))}</div>
+  ${h.applications === 'soon' ? `<div class="status-soon">Accepting applications soon</div>` : ''}
   <div class="near">${t(nearLine(h))}</div>
 </a>`;
 }
@@ -156,6 +157,7 @@ function homeCard(base, h) {
 function homesByCity(base, opts = {}) {
   return cities.map(c => `<div class="city-group" id="${c.toLowerCase()}" data-reveal>
   <div class="city-head"><h3>${esc(c)}</h3><span>${byCity(c).length} HOMES</span></div>
+  ${D.network.cityNotes && D.network.cityNotes[c] ? `<p class="city-note">${t(D.network.cityNotes[c])}</p>` : ''}
   <div class="home-cards">${byCity(c).map(h => homeCard(base, h)).join('')}</div>
 </div>`).join('');
 }
@@ -318,6 +320,7 @@ function homePage(h) {
   <div class="eyebrow light">${t(`Sober living for ${servesLabel(h).toLowerCase()} · ${h.city}, Indiana`)}</div>
   <h1>${t(name)}</h1>
   <p class="lede">${t(fill(H.lede))}</p>
+  ${h.applications === 'soon' ? `<div class="notice-pill"><span class="dot"></span>Accepting applications soon</div>` : ''}
   ${D.SHOW_BEDS && h.bedsHouseId ? `<iframe class="beds-frame" src="${esc(D.BEDS_EMBED)}?houseId=${esc(h.bedsHouseId)}" title="Bed availability at ${esc(name)}" width="320" height="94" loading="lazy"></iframe>` : ''}
 </div></section>
 
@@ -365,10 +368,13 @@ ${D.SHOW_FOUNDERS ? `<section id="founders" class="section"><div class="wrap fou
 
 <section id="availability" class="cta dark apply"><div class="glow"></div><div class="inner" data-reveal>
   <img src="${base}assets/img/phoenix-mark.png" alt="">
-  <h2>Apply to ${t(name)}.</h2>
+  ${h.applications === 'soon' ? `<h2>Applications open soon.</h2>
+  <p class="lede dim">${t(name)} will be accepting applications soon. Check back here, or call us to be notified when it opens.</p>
+  ${sameCity.filter(o => o.applications !== 'soon').length ? `<div class="apply-soon"><div class="k">Accepting applications now in ${esc(h.city)}</div>${sameCity.filter(o => o.applications !== 'soon').map(o => `<a href="${homeUrl(base, o)}#availability">${t(o.name)} →</a>`).join('')}</div>` : ''}
+  <div class="talk">Questions? Call <a href="tel:${D.PHONE_TEL}">${esc(D.PHONE)}</a> or email <a class="accent" href="mailto:${D.EMAIL}">${D.EMAIL}</a></div>` : `<h2>Apply to ${t(name)}.</h2>
   <p class="lede dim">${t(H.applyLede)}</p>
   ${applyFrame(`${name} application`)}
-  <div class="talk">Prefer to talk first? Call <a href="tel:${D.PHONE_TEL}">${esc(D.PHONE)}</a> or email <a class="accent" href="mailto:${D.EMAIL}">${D.EMAIL}</a></div>
+  <div class="talk">Prefer to talk first? Call <a href="tel:${D.PHONE_TEL}">${esc(D.PHONE)}</a> or email <a class="accent" href="mailto:${D.EMAIL}">${D.EMAIL}</a></div>`}
 </div></section>
 
 <section class="wrap others-wrap">

@@ -70,6 +70,10 @@ const network = {
   applyTitle: 'Apply now.',
   applyLede: 'Applications go straight to our team and are kept confidential. Family members and referring professionals are welcome to call or email us directly.',
   bedsTitle: 'Openings across the network, updated automatically.',
+  // Notes shown under a city heading in the Our Homes section (homepage and all-homes page). Delete a line to remove it.
+  cityNotes: {
+    Indianapolis: 'Applications are being accepted for Cornelius and Rookwood Houses only. No applications are being accepted for the Julian House at this time.'
+  },
   // Founders story exactly as sent by the client on 2026-10-22 (word for word at Jessica's request). Photos: assets/img/founder-*.jpg, shown in color.
   founders: {
     headline: 'Meet the Visionaries Behind Phoenix Recovery Network',
@@ -115,6 +119,7 @@ const homeDefaults = {
 // the first is the front of the house. `nearby` distances are the client's estimates from the design handoff.
 const homes = [
   { slug: 'julian-house', name: 'Julian House', city: 'Indianapolis', serves: 'Men', capacity: 12, bedsHouseId: '17258',
+    applications: 'soon',   // 2026-10-26: not accepting applications until the purchase closes; remove this line to reopen
     area: 'A quiet residential street in Irvington, on Indianapolis’ east side.',
     nearby: [['AA meeting', '5 min walk'], ['NA meeting', '5 min drive'], ['Bus stop (IndyGo)', '15 min walk'], ['Grocery store', '5 min drive'], ['Public library', '5 min walk'], ['Park', '5 min walk'], ['Hospital', '5 min drive']],
     photos: [['front.jpg', 'Front of the house'], ['living.jpg', 'Living room with sectional seating'], ['bath.jpg', 'Bathroom with walk-in shower'], ['laundry.jpg', 'Laundry room with washer and dryer'], ['deck.jpg', 'Backyard with deck and garden bed']],
