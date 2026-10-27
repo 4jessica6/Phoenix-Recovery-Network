@@ -150,7 +150,7 @@ const homes = [
     photos: [['front.jpg', 'Front of the house'], ['living.jpg', 'Living room'], ['kitchen.jpg', 'Kitchen'], ['kitchen-2.jpg', 'Kitchen, sink and pantry'], ['dining.jpg', 'Dining room']],
     video: 'walkthrough.mp4' },
   // 9th Street House: purchase pending (2026-10-21). Photos + reel kept in Downloads…walkthrough-videos921-w-9th; add back here when the client confirms.
-  { slug: '7th-street-house', name: '7th Street House', city: 'Anderson', serves: 'Men', capacity: 6,
+  { slug: '7th-street-house', name: '7th Street House', city: 'Anderson', serves: 'Men', capacity: 7,
     area: 'A quiet residential street on Anderson’s west side, close to downtown.',
     nearby: [['AA meeting', '15 min walk'], ['NA meeting', '5 min walk'], ['Bus stop', '15 min walk'], ['Grocery store', '5 min drive'], ['Public library', '5 min drive'], ['Park', '5 min walk'], ['Hospital', '5 min drive']],
     photos: [['front.jpg', 'Front of the house'], ['living.jpg', 'Living room'], ['kitchen.jpg', 'Kitchen'], ['bath.jpg', 'Bathroom'], ['backyard.jpg', 'Back of the house and patio']],
