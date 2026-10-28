@@ -8,7 +8,7 @@ const PHONE_TEL = '+13172963622';
 const EMAIL = 'info@phoenixrecoverynetwork.com';
 const APPLY_URL = 'https://www.sobrietyhub.app/dashboard/forms/public/36b0f645-35b6-43c3-9c63-622fb5df62e3';
 const BEDS_EMBED = 'https://www.sobrietyhub.app/embed/13862/occupancy';
-const SHOW_BEDS = false;      // Sobriety Hub live-occupancy widgets (homepage + per house). Turn on when the client is ready.
+const SHOW_BEDS = false;      // Network-wide Sobriety Hub occupancy widget on the homepage. Per-house widgets are switched on with showBeds: true on each home below.
 const SHOW_FOUNDERS = true;   // "Our founders": full story on the homepage, short version with a link on each house page.
 
 const network = {
@@ -124,33 +124,33 @@ const homes = [
     nearby: [['AA meeting', '5 min walk'], ['NA meeting', '5 min drive'], ['Bus stop (IndyGo)', '15 min walk'], ['Grocery store', '5 min drive'], ['Public library', '5 min walk'], ['Park', '5 min walk'], ['Hospital', '5 min drive']],
     photos: [['front.jpg', 'Front of the house'], ['living.jpg', 'Living room with sectional seating'], ['bath.jpg', 'Bathroom with walk-in shower'], ['laundry.jpg', 'Laundry room with washer and dryer'], ['deck.jpg', 'Backyard with deck and garden bed']],
     video: 'walkthrough.mp4' },
-  { slug: 'cornelius-house', name: 'Cornelius House', city: 'Indianapolis', serves: 'Men', capacity: 7,
+  { slug: 'cornelius-house', name: 'Cornelius House', city: 'Indianapolis', serves: 'Men', capacity: 7, bedsHouseId: '17259',
     area: 'A quiet residential street in Mapleton, on Indianapolis’ north side.',
     nearby: [['AA meeting', '5 min drive'], ['NA meeting', '5 min drive'], ['Bus stop (IndyGo)', '15 min walk'], ['Grocery store', '10 min drive'], ['Public library', '5 min drive'], ['Park', '15 min walk']],
     photos: [['front.jpg', 'Front of the house'], ['hall.jpg', 'Front room and staircase'], ['kitchen.jpg', 'Kitchen'], ['bath.jpg', 'Bathroom'], ['laundry.jpg', 'Laundry and wash room']],
     video: 'walkthrough.mp4' },
-  { slug: 'rookwood-house', name: 'Rookwood House', city: 'Indianapolis', serves: 'Men', capacity: 8,
+  { slug: 'rookwood-house', name: 'Rookwood House', city: 'Indianapolis', serves: 'Men', capacity: 8, bedsHouseId: '17260',
     area: 'A quiet residential street in Mapleton, on Indianapolis’ north side.',
     nearby: [['AA meeting', '5 min drive'], ['NA meeting', '5 min drive'], ['Bus stop (IndyGo)', '15 min walk'], ['Grocery store', '5 min drive'], ['Public library', '5 min drive'], ['Park', '10 min walk']],
     photos: [['front.jpg', 'Front of the house'], ['kitchen.jpg', 'Kitchen'], ['hall.jpg', 'Upstairs hallway'], ['bath.jpg', 'Bathroom'], ['laundry.jpg', 'Laundry room']],
     video: 'walkthrough.mp4' },
-  { slug: 'central-house', name: 'Central House', city: 'Anderson', serves: 'Men', capacity: 10,
+  { slug: 'central-house', name: 'Central House', city: 'Anderson', serves: 'Men', capacity: 10, bedsHouseId: '17221', showBeds: true,
     area: 'A quiet residential street on Anderson’s near east side, close to downtown.',
     nearby: [['AA meeting', '10 min walk'], ['NA meeting', '10 min walk'], ['Bus stop', '5 min walk'], ['Grocery store', '5 min drive'], ['Public library', '10 min walk'], ['Park', '5 min walk'], ['Hospital', '5 min drive']],
     photos: [['front.jpg', 'Front of the house'], ['hall.jpg', 'Entry hall and staircase'], ['kitchen.jpg', 'Kitchen'], ['bath.jpg', 'Bathroom'], ['kitchen-2.jpg', 'Kitchen and pantry']],
     video: 'walkthrough.mp4' },
-  { slug: 'central-house-ii', name: 'Central House II', city: 'Anderson', serves: 'Men', capacity: 8,
+  { slug: 'central-house-ii', name: 'Central House II', city: 'Anderson', serves: 'Men', capacity: 8, bedsHouseId: '17253', showBeds: true,
     area: 'A quiet residential street on Anderson’s south side.',
     nearby: [['AA meeting', '10 min drive'], ['NA meeting', '5 min drive'], ['Bus stop', '10 min drive'], ['Grocery store', '5 min drive'], ['Park', '10 min walk'], ['Hospital', '10 min drive']],
     photos: [['front.jpg', 'Front of the house'], ['living.jpg', 'Living room'], ['kitchen.jpg', 'Kitchen'], ['bath.jpg', 'Bathroom'], ['backyard.jpg', 'Back yard']],
     video: 'walkthrough.mp4' },
-  { slug: '8th-street-house', name: '8th Street House', city: 'Anderson', serves: 'Women', capacity: 9,
+  { slug: '8th-street-house', name: '8th Street House', city: 'Anderson', serves: 'Women', capacity: 9, bedsHouseId: '17255', showBeds: true,
     area: 'A quiet residential street on Anderson’s near east side, close to downtown.',
     nearby: [['AA meeting', '15 min walk'], ['NA meeting', '15 min walk'], ['Bus stop', '5 min walk'], ['Grocery store', '15 min walk'], ['Public library', '5 min drive'], ['Park', '10 min walk'], ['Hospital', '5 min drive']],
     photos: [['front.jpg', 'Front of the house'], ['living.jpg', 'Living room'], ['kitchen.jpg', 'Kitchen'], ['kitchen-2.jpg', 'Kitchen, sink and pantry'], ['dining.jpg', 'Dining room']],
     video: 'walkthrough.mp4' },
   // 9th Street House: purchase pending (2026-10-21). Photos + reel kept in Downloads…walkthrough-videos921-w-9th; add back here when the client confirms.
-  { slug: '7th-street-house', name: '7th Street House', city: 'Anderson', serves: 'Men', capacity: 7,
+  { slug: '7th-street-house', name: '7th Street House', city: 'Anderson', serves: 'Men', capacity: 7, bedsHouseId: '17256', showBeds: true,
     area: 'A quiet residential street on Anderson’s west side, close to downtown.',
     nearby: [['AA meeting', '15 min walk'], ['NA meeting', '5 min walk'], ['Bus stop', '15 min walk'], ['Grocery store', '5 min drive'], ['Public library', '5 min drive'], ['Park', '5 min walk'], ['Hospital', '5 min drive']],
     photos: [['front.jpg', 'Front of the house'], ['living.jpg', 'Living room'], ['kitchen.jpg', 'Kitchen'], ['bath.jpg', 'Bathroom'], ['backyard.jpg', 'Back of the house and patio']],

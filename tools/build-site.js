@@ -321,7 +321,7 @@ function homePage(h) {
   <h1>${t(name)}</h1>
   <p class="lede">${t(fill(H.lede))}</p>
   ${h.applications === 'soon' ? `<div class="notice-pill"><span class="dot"></span>Accepting applications soon</div>` : ''}
-  ${D.SHOW_BEDS && h.bedsHouseId ? `<iframe class="beds-frame" src="${esc(D.BEDS_EMBED)}?houseId=${esc(h.bedsHouseId)}" title="Bed availability at ${esc(name)}" width="320" height="94" loading="lazy"></iframe>` : ''}
+  ${h.showBeds && h.bedsHouseId ? `<iframe class="beds-frame" src="${esc(D.BEDS_EMBED)}?houseId=${esc(h.bedsHouseId)}" title="Bed availability at ${esc(name)}" width="320" height="94" loading="lazy"></iframe>` : ''}
 </div></section>
 
 ${gallery(base, H)}
