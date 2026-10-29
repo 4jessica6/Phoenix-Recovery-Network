@@ -118,13 +118,13 @@ const homeDefaults = {
 // One entry per home, in display order. `photos` are [file, caption] pairs under preview/assets/homes/<slug>/;
 // the first is the front of the house. `nearby` distances are the client's estimates from the design handoff.
 const homes = [
-  { slug: 'julian-house', name: 'Julian House', city: 'Indianapolis', serves: 'Men', capacity: 12, bedsHouseId: '17258',
+  { slug: 'julian-house', name: 'Julian House', city: 'Indianapolis', serves: 'Men', capacity: 13, bedsHouseId: '17258',
     applications: 'soon',   // 2026-10-26: not accepting applications until the purchase closes; remove this line to reopen
     area: 'A quiet residential street in Irvington, on Indianapolis’ east side.',
     nearby: [['AA meeting', '5 min walk'], ['NA meeting', '5 min drive'], ['Bus stop (IndyGo)', '15 min walk'], ['Grocery store', '5 min drive'], ['Public library', '5 min walk'], ['Park', '5 min walk'], ['Hospital', '5 min drive']],
     photos: [['front.jpg', 'Front of the house'], ['living.jpg', 'Living room with sectional seating'], ['bath.jpg', 'Bathroom with walk-in shower'], ['laundry.jpg', 'Laundry room with washer and dryer'], ['deck.jpg', 'Backyard with deck and garden bed']],
     video: 'walkthrough.mp4' },
-  { slug: 'cornelius-house', name: 'Cornelius House', city: 'Indianapolis', serves: 'Men', capacity: 7, bedsHouseId: '17259',
+  { slug: 'cornelius-house', name: 'Cornelius House', city: 'Indianapolis', serves: 'Men', capacity: 6, bedsHouseId: '17259',
     area: 'A quiet residential street in Mapleton, on Indianapolis’ north side.',
     nearby: [['AA meeting', '5 min drive'], ['NA meeting', '5 min drive'], ['Bus stop (IndyGo)', '15 min walk'], ['Grocery store', '10 min drive'], ['Public library', '5 min drive'], ['Park', '15 min walk']],
     photos: [['front.jpg', 'Front of the house'], ['hall.jpg', 'Front room and staircase'], ['kitchen.jpg', 'Kitchen'], ['bath.jpg', 'Bathroom'], ['laundry.jpg', 'Laundry and wash room']],
@@ -150,7 +150,7 @@ const homes = [
     photos: [['front.jpg', 'Front of the house'], ['living.jpg', 'Living room'], ['kitchen.jpg', 'Kitchen'], ['kitchen-2.jpg', 'Kitchen, sink and pantry'], ['dining.jpg', 'Dining room']],
     video: 'walkthrough.mp4' },
   // 9th Street House: purchase pending (2026-10-21). Photos + reel kept in Downloads…walkthrough-videos921-w-9th; add back here when the client confirms.
-  { slug: '7th-street-house', name: '7th Street House', city: 'Anderson', serves: 'Men', capacity: 7, bedsHouseId: '17256', showBeds: true,
+  { slug: '7th-street-house', name: '7th Street House', city: 'Anderson', serves: 'Men', capacity: 6, bedsHouseId: '17256', showBeds: true,
     area: 'A quiet residential street on Anderson’s west side, close to downtown.',
     nearby: [['AA meeting', '15 min walk'], ['NA meeting', '5 min walk'], ['Bus stop', '15 min walk'], ['Grocery store', '5 min drive'], ['Public library', '5 min drive'], ['Park', '5 min walk'], ['Hospital', '5 min drive']],
     photos: [['front.jpg', 'Front of the house'], ['living.jpg', 'Living room'], ['kitchen.jpg', 'Kitchen'], ['bath.jpg', 'Bathroom'], ['backyard.jpg', 'Back of the house and patio']],
