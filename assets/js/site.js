@@ -59,18 +59,42 @@
     window.addEventListener('scroll', measure, { passive: true });
   }
 
-  /* Videos: load lazily; smaller file on phones; skip heavy background videos on phones entirely */
-  document.querySelectorAll('video[data-src]').forEach(function (v) {
-    if (reduce) return;
-    var narrow = window.innerWidth < 768;
-    if (narrow && v.hasAttribute('data-desktop-only')) return;
+  /* Videos: one thing moves at a time.
+     On landing only the hero film plays. Videos further down stay paused until the visitor
+     scrolls and they come into view; once scrolled away from the top, the hero pauses. */
+  var narrow = window.innerWidth < 768;
+  var vids = Array.prototype.slice.call(document.querySelectorAll('video[data-src]')).filter(function (v) {
+    if (reduce) return false;
+    if (narrow && v.hasAttribute('data-desktop-only')) return false;
     var mobile = v.getAttribute('data-src-mobile');
     v.src = (mobile && narrow) ? mobile : v.getAttribute('data-src');
     v.muted = true; v.loop = true; v.playsInline = true;
     v.load();
-    var p = v.play();
-    if (p && p.catch) p.catch(function () {});
+    return true;
   });
+  var heroVids = vids.filter(function (v) { return v.classList.contains('hero-bg'); });
+  var otherVids = vids.filter(function (v) { return !v.classList.contains('hero-bg'); });
+  var seen = {};
+  otherVids.forEach(function (v, i) { v.dataset.vid = String(i); });
+  function play(v) { if (v.paused) { var p = v.play(); if (p && p.catch) p.catch(function () {}); } }
+  function pause(v) { if (!v.paused) v.pause(); }
+  function update() {
+    var atTop = (window.scrollY || window.pageYOffset) < 120;
+    heroVids.forEach(function (v) { atTop ? play(v) : pause(v); });
+    otherVids.forEach(function (v) { (!atTop && seen[v.dataset.vid]) ? play(v) : pause(v); });
+  }
+  if (otherVids.length && 'IntersectionObserver' in window) {
+    var vio = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) { seen[en.target.dataset.vid] = en.isIntersecting && en.intersectionRatio >= 0.25; });
+      update();
+    }, { threshold: [0, 0.25, 0.5, 0.75] });
+    otherVids.forEach(function (v) { vio.observe(v); });
+  } else {
+    otherVids.forEach(function (v) { seen[v.dataset.vid] = true; });
+  }
+  window.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update);
+  update();
 
   /* FAQ: one open at a time */
   document.querySelectorAll('.faq').forEach(function (faq) {
