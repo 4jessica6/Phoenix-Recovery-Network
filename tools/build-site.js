@@ -13,6 +13,7 @@ const REPO = path.join(__dirname, '..');
 const OUT = LAUNCH ? REPO : path.join(REPO, 'preview');
 const SITE = 'https://www.phoenixrecoverynetwork.com';
 const INDIANA_PATH = fs.readFileSync(path.join(__dirname, 'indiana-path.txt'), 'utf8').trim();
+const BUILD = Date.now().toString(36); // cache-buster for the stylesheet and script
 
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 // Escape, then tint [placeholders] in the preview build so the client can spot what is still TBC.
@@ -103,8 +104,8 @@ function page({ base, kind, home, title, description, ogImage, body, current }) 
 <link rel="apple-touch-icon" href="${base}assets/img/favicon.png">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="${base}assets/fonts/newsreader-latin.woff2">
 <link rel="preload" as="font" type="font/woff2" crossorigin href="${base}assets/fonts/montserrat-latin.woff2">
-<link rel="stylesheet" href="${base}assets/css/site.css">
-<script defer src="${base}assets/js/site.js"></script>
+<link rel="stylesheet" href="${base}assets/css/site.css?v=${BUILD}">
+<script defer src="${base}assets/js/site.js?v=${BUILD}"></script>
 </head>
 <body>
 ${previewBar(base, current)}
