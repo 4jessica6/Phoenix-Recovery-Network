@@ -129,7 +129,7 @@ const homes = [
     nearby: [['AA meeting', '5 min drive'], ['NA meeting', '5 min drive'], ['Bus stop (IndyGo)', '15 min walk'], ['Grocery store', '10 min drive'], ['Public library', '5 min drive'], ['Park', '15 min walk']],
     photos: [['front.jpg', 'Front of the house'], ['hall.jpg', 'Front room and staircase'], ['kitchen.jpg', 'Kitchen'], ['bath.jpg', 'Bathroom'], ['laundry.jpg', 'Laundry and wash room']],
     video: 'walkthrough.mp4' },
-  { slug: 'rookwood-house', name: 'Rookwood House', city: 'Indianapolis', serves: 'Men', capacity: 8, bedsHouseId: '17260',
+  { slug: 'rookwood-house', name: 'Rookwood House', city: 'Indianapolis', serves: 'Men', capacity: 9, bedsHouseId: '17260',
     area: 'A quiet residential street in Mapleton, on Indianapolis’ north side.',
     nearby: [['AA meeting', '5 min drive'], ['NA meeting', '5 min drive'], ['Bus stop (IndyGo)', '15 min walk'], ['Grocery store', '5 min drive'], ['Public library', '5 min drive'], ['Park', '10 min walk']],
     photos: [['front.jpg', 'Front of the house'], ['kitchen.jpg', 'Kitchen'], ['hall.jpg', 'Upstairs hallway'], ['bath.jpg', 'Bathroom'], ['laundry.jpg', 'Laundry room']],
