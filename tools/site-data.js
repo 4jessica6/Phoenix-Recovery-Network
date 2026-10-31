@@ -124,7 +124,7 @@ const homes = [
     nearby: [['AA meeting', '5 min walk'], ['NA meeting', '5 min drive'], ['Bus stop (IndyGo)', '15 min walk'], ['Grocery store', '5 min drive'], ['Public library', '5 min walk'], ['Park', '5 min walk'], ['Hospital', '5 min drive']],
     photos: [['front.jpg', 'Front of the house'], ['living.jpg', 'Living room with sectional seating'], ['bath.jpg', 'Bathroom with walk-in shower'], ['laundry.jpg', 'Laundry room with washer and dryer'], ['deck.jpg', 'Backyard with deck and garden bed']],
     video: 'walkthrough.mp4' },
-  { slug: 'cornelius-house', name: 'Cornelius House', city: 'Indianapolis', serves: 'Men', capacity: 6, bedsHouseId: '17259',
+  { slug: 'cornelius-house', name: 'Cornelius House', city: 'Indianapolis', serves: 'Men', capacity: 7, bedsHouseId: '17259',
     area: 'A quiet residential street in Mapleton, on Indianapolis’ north side.',
     nearby: [['AA meeting', '5 min drive'], ['NA meeting', '5 min drive'], ['Bus stop (IndyGo)', '15 min walk'], ['Grocery store', '10 min drive'], ['Public library', '5 min drive'], ['Park', '15 min walk']],
     photos: [['front.jpg', 'Front of the house'], ['hall.jpg', 'Front room and staircase'], ['kitchen.jpg', 'Kitchen'], ['bath.jpg', 'Bathroom'], ['laundry.jpg', 'Laundry and wash room']],
